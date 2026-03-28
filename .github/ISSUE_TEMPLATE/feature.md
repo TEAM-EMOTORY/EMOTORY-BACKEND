@@ -1,3 +1,10 @@
+---
+name: Feature
+about: 기능 요청
+title: "[FEATURE] "
+labels: feature
+assignees: ''
+---
 ## 📌 기능 설명
 - 어떤 기능인지 간단히 설명
 
