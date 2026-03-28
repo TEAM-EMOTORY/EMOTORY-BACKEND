@@ -1,3 +1,13 @@
+---
+name: Refactor
+about: 리팩토링
+title: "[REFACTOR] "
+labels: refactor
+assignees: ''
+---
+
+## 🔧 리팩토링 내용
+
 ## 🔧 리팩토링 대상
 - 어떤 부분을 개선하는지
 
