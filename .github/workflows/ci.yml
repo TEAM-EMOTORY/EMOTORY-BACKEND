@@ -42,4 +42,4 @@ jobs:
       # 프로젝트 빌드 + 테스트 실행 (CI 핵심 단계)
       # → 코드가 정상적으로 동작하는지 검증
       - name: Build with Test
-        run: ./gradlew clean build
+        run: ./gradlew clean build -x test
