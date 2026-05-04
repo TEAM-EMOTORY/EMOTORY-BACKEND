@@ -19,7 +19,6 @@ public class CorsConfig {
         config.setAllowCredentials(true);
         config.setAllowedOrigins(List.of(
                 "http://localhost:5173",    //Vite 개발 서버
-                "http://localhost:3000",    //프론트 개발 환경
                 "https://emotory.shop"      //배포된 실제 주소
         ));
 
