@@ -25,6 +25,9 @@ public class SecurityConfig {
                                 "/v3/api-docs/**"
                         ).permitAll()
 
+                        // S3 업로드 허용
+                        .requestMatchers("/api/s3/**").permitAll()
+
                         // 전체 허용
                         .anyRequest().permitAll()
                 );
