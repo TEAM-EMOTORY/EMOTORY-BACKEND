@@ -2,17 +2,16 @@ package com.emotory.backend.domain.playSession.entity;
 
 import com.emotory.backend.domain.member.entity.Member;
 import com.emotory.backend.domain.story.entity.Story;
+import com.emotory.backend.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class PlaySession {
+public class PlaySession extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,12 +23,6 @@ public class PlaySession {
 
     @Column(name = "current_node_id")
     private Long currentNodeId;
-
-    @Column(name = "started_at", nullable = false)
-    private LocalDateTime startedAt;
-
-    @Column(name = "ended_at", nullable = false)
-    private LocalDateTime endedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
