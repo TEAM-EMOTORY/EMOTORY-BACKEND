@@ -3,6 +3,7 @@ package com.emotory.backend.domain.storyResult.entity;
 import com.emotory.backend.domain.playSession.entity.PlaySession;
 import com.emotory.backend.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,15 +18,15 @@ public class StoryResult extends BaseTimeEntity {
     @Column(name = "result_id", nullable = false)
     private Long id;
 
-    @Lob
-    @Column(nullable = false)
+    @Size(max = 300)
+    @Column(length = 300, nullable = false)
     private String summary;
 
     @Column(nullable = false)
     private String emotion;
 
-    @Lob
-    @Column(nullable = false)
+    @Size(max = 300)
+    @Column(length = 300, nullable = false)
     private String advice;
 
     @ManyToOne(fetch = FetchType.LAZY)
