@@ -1,23 +1,34 @@
 package com.emotory.backend.domain.member.controller;
 
+import com.emotory.backend.domain.member.controller.docs.MemberControllerDocs;
 import com.emotory.backend.domain.member.dto.request.MemberPrivacyRequest;
+import com.emotory.backend.domain.member.dto.response.MemberNameResponse;
 import com.emotory.backend.domain.member.service.MemberService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "사용자")
 @RestController
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
-public class MemberController {
+public class MemberController implements MemberControllerDocs {
 
     private final MemberService memberService;
 
-    @Operation(summary = "사용자 약관 동의", description = "사용자 ID로 개인정보 동의 여부를 수정합니다.")
+    @Override
+    @GetMapping("/{memberId}")
+    public MemberNameResponse getMemberName(@PathVariable Long memberId) {
+        return memberService.getMemberName(memberId);
+    }
+
+    @Override
     @PatchMapping("/{memberId}/privacy")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updatePrivacy(
