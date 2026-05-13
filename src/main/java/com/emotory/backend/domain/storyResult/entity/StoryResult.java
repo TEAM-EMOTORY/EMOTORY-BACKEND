@@ -25,10 +25,6 @@ public class StoryResult extends BaseTimeEntity {
     @Column(nullable = false)
     private String emotion;
 
-    @Size(max = 300)
-    @Column(length = 300, nullable = false)
-    private String advice;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "play_session_id", nullable = false)
     private PlaySession playSession;
