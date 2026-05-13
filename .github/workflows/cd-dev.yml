@@ -1,11 +1,12 @@
-name: CD
+name: CD-DEV
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - dev
 
 jobs:
-  deploy:
+  deploy-dev:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,7 +25,7 @@ jobs:
       - name: Grant execute permission
         run: chmod +x ./gradlew
 
-      # 4. 빌드 (테스트 제외)
+      # 4. 빌드
       - name: Build
         run: ./gradlew clean build -x test
 
@@ -39,15 +40,13 @@ jobs:
       - name: Build & Push Image
         run: |
           docker build \
-            -t ${{ secrets.DOCKERHUB_USERNAME }}/emotory-backend:latest \
-            -t ${{ secrets.DOCKERHUB_USERNAME }}/emotory-backend:${{ github.sha }} \
+            -t ${{ secrets.DOCKERHUB_USERNAME }}/emotory-backend:dev \
             .
 
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/emotory-backend:latest
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/emotory-backend:${{ github.sha }}
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/emotory-backend:dev
 
-      # 7. EC2 배포
-      - name: Deploy to EC2
+      # 7. DEV 서버 배포
+      - name: Deploy to DEV Server
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.WAS_HOST }}
@@ -55,13 +54,16 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: 22
           script: |
-            cd /home/ubuntu
+            cd /home/ubuntu/emotory
 
-            # 최신 이미지 pull
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/emotory-backend:latest
-            
-            # 기존 컨테이너 정리
-            docker compose down || true
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/emotory-backend:dev
 
-            # 컨테이너 재시작 (간단하고 안정적인 방식)
-            docker compose up -d --remove-orphans
+            docker compose -p dev \
+              --env-file .env.dev \
+              -f docker-compose.dev.yml \
+              down || true
+
+            docker compose -p dev \
+              --env-file .env.dev \
+              -f docker-compose.dev.yml \
+              up -d --remove-orphans
