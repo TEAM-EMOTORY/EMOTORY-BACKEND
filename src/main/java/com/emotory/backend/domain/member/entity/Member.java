@@ -2,9 +2,14 @@ package com.emotory.backend.domain.member.entity;
 
 import com.emotory.backend.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Member extends BaseTimeEntity {
 

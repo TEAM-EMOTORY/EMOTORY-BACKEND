@@ -1,8 +1,13 @@
 package com.emotory.backend.domain.choice.entity;
 
-import com.emotory.backend.domain.storyNode.StoryNode;
+import com.emotory.backend.domain.storyNode.entity.StoryNode;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Choice {
     @Id

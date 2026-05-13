@@ -1,8 +1,13 @@
-package com.emotory.backend.domain.storyNode;
+package com.emotory.backend.domain.storyNode.entity;
 
 import com.emotory.backend.domain.story.entity.Story;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class StoryNode {
     @Id
@@ -13,7 +18,7 @@ public class StoryNode {
     @Column(nullable = false)
     private String content;
 
-    @Column(name="node_order", nullable = false)
+    @Column(name = "node_order", nullable = false)
     private Integer nodeOrder;
 
     @ManyToOne(fetch = FetchType.LAZY)
