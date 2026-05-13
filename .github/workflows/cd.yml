@@ -48,7 +48,7 @@ jobs:
 
       # 7. EC2 배포
       - name: Deploy to EC2
-        uses: appleboy/ssh-action@v0.1.6
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.WAS_HOST }}
           username: ubuntu
