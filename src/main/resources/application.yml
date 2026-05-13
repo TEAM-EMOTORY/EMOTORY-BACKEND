@@ -9,3 +9,17 @@ server:
 logging:
   level:
     root: INFO
+
+cloud:
+  aws:
+    region:
+      static: ${AWS_REGION}
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
+    s3:
+      bucket: ${AWS_S3_BUCKET}
+      presigned-url:
+        expiration-minutes: 10 # presigned URL 만료 시간 (분 단위)
+    cloudfront:
+      domain: ${AWS_CLOUDFRONT_DOMAIN}
