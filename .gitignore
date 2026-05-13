@@ -53,7 +53,8 @@ out/
 
 ### 배포 ###
 !ci.yml
-!cd.yml
+!cd-dev.yml
+!cd-prod.yml
 
 ### 환경 변수 ###
 .env
