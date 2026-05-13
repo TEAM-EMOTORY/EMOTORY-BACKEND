@@ -33,6 +33,11 @@ public class Member extends BaseTimeEntity {
     @Column(name = "is_privacy_agreed", nullable = false)
     private Boolean isPrivacyAgreed;
 
-    @Column(name = "privacy_agreed_at", nullable = false)
+    @Column(name = "privacy_agreed_at")
     private LocalDateTime privacyAgreedAt;
+
+    public void updatePrivacyAgreement(Boolean isPrivacyAgreed, LocalDateTime privacyAgreedAt) {
+        this.isPrivacyAgreed = isPrivacyAgreed;
+        this.privacyAgreedAt = privacyAgreedAt;
+    }
 }
