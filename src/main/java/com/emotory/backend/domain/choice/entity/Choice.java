@@ -18,8 +18,9 @@ public class Choice {
     @Column(nullable = false)
     private String content;
 
-    @Column(name = "next_node_id", nullable = false)
-    private Long nextNodeId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "next_node_id", nullable = false)
+    private StoryNode nextNode;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "node_id", nullable = false)
