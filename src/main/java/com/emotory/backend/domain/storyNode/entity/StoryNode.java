@@ -24,4 +24,11 @@ public class StoryNode {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "story_id", nullable = false)
     private Story story;
+
+    @Column(name = "node_is_ending", nullable = false)
+    private Boolean isEnding;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "node_emotion")
+    private Emotion emotion;
 }
