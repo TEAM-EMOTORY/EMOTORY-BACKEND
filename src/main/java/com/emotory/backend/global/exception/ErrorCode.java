@@ -23,6 +23,7 @@ public enum ErrorCode {
     // 404 error
     NOT_FOUND(404, "존재하지 않는 리소스입니다."),
     S3_FILE_NOT_FOUND(404, "S3 파일을 찾을 수 없습니다."),
+    STORY_NODE_NOT_FOUND(404, "스토리 노드를 찾을 수 없습니다."),
 
     // 500 error
     INTERNAL_SERVER_ERROR(500, "서버 오류가 발생했습니다."),
