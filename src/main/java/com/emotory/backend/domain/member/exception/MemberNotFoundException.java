@@ -6,6 +6,6 @@ import com.emotory.backend.global.exception.ErrorCode;
 public class MemberNotFoundException extends CustomException {
 
     public MemberNotFoundException() {
-        super(ErrorCode.NOT_FOUND);
+        super(ErrorCode.MEMBER_NOT_FOUND);
     }
 }
