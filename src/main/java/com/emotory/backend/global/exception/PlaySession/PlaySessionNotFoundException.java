@@ -1,4 +1,4 @@
-package com.emotory.backend.global.exception.image;
+package com.emotory.backend.global.exception.PlaySession;
 
 import com.emotory.backend.global.exception.CustomException;
 import com.emotory.backend.global.exception.ErrorCode;
