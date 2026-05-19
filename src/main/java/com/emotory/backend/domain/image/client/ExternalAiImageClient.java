@@ -19,6 +19,9 @@ public class ExternalAiImageClient {
     @Value("${openai.api-key}")
     private String apiKey;
 
+    @Value("${openai.base-url}")
+    private String baseUrl;
+
     private final WebClient.Builder webClientBuilder;
 
     public byte[] generateImage(
@@ -27,7 +30,7 @@ public class ExternalAiImageClient {
     ) {
 
         WebClient webClient = webClientBuilder
-                .baseUrl("https://api.openai.com")
+                .baseUrl(baseUrl)
                 .build();
 
         MultipartBodyBuilder builder =
