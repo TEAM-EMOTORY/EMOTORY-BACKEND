@@ -4,6 +4,7 @@ import com.emotory.backend.domain.playSession.controller.docs.PlaySessionControl
 import com.emotory.backend.domain.playSession.dto.request.PlaySessionCreateRequest;
 import com.emotory.backend.domain.playSession.dto.response.PlaySessionResponse;
 import com.emotory.backend.domain.playSession.service.PlaySessionService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +18,7 @@ public class PlaySessionController implements PlaySessionControllerDocs {
     // 플레이 세션 생성
     @PostMapping
     public PlaySessionResponse create(
+            @Valid
             @RequestBody
             PlaySessionCreateRequest request
     ) {
