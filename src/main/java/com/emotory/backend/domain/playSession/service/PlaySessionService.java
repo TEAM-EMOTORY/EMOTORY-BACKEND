@@ -11,7 +11,7 @@ import com.emotory.backend.domain.story.entity.Story;
 import com.emotory.backend.domain.story.repository.StoryRepository;
 import com.emotory.backend.domain.storyNode.entity.StoryNode;
 import com.emotory.backend.domain.storyNode.repository.StoryNodeRepository;
-import com.emotory.backend.global.exception.playSesstion.PlaySessionNotFoundException;
+import com.emotory.backend.global.exception.playSession.PlaySessionNotFoundException;
 import com.emotory.backend.global.exception.storyNode.StoryNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
