@@ -1,5 +1,6 @@
 package com.emotory.backend.domain.storyNode.entity;
 
+import com.emotory.backend.domain.story.entity.Emotion;
 import com.emotory.backend.domain.story.entity.Story;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

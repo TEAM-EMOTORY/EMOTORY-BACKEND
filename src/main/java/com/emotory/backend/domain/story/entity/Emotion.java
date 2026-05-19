@@ -1,4 +1,4 @@
-package com.emotory.backend.domain.storyNode.entity;
+package com.emotory.backend.domain.story.entity;
 
 public enum Emotion {
 
