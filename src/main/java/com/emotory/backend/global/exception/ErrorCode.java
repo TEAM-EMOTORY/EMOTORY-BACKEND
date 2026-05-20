@@ -22,6 +22,7 @@ public enum ErrorCode {
 
     // 404 error
     NOT_FOUND(404, "존재하지 않는 리소스입니다."),
+    MEMBER_NOT_FOUND(404, "회원을 찾을 수 없습니다."),
     S3_FILE_NOT_FOUND(404, "S3 파일을 찾을 수 없습니다."),
     PLAY_SESSION_NOT_FOUND(404, "스토리 노드를 찾을 수 없습니다."),
     STORY_NODE_NOT_FOUND(404,"플레이 세션을 찾을 수 없습니다."),
