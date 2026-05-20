@@ -2,6 +2,7 @@ package com.emotory.backend.global.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,9 +21,19 @@ public class GlobalExceptionHandler {
 
         log.warn("CustomException 발생: {}", code.name());
 
-        return ResponseEntity
-                .status(code.getStatus())
-                .body(new ErrorResponse(code.getStatus(), code.getMessage()));
+        return buildErrorResponse(code);
+    }
+
+    /**
+     * PathVariable, RequestParam 타입 변환 실패 처리
+     */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
+        ErrorCode code = ErrorCode.INVALID_INPUT;
+
+        log.warn("MethodArgumentTypeMismatchException 발생: parameter={}, value={}", e.getName(), e.getValue());
+
+        return buildErrorResponse(code);
     }
 
     /**
@@ -67,5 +78,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(500)
                 .body(new ErrorResponse(500, "서버 내부 오류"));
+    }
+
+    private ResponseEntity<ErrorResponse> buildErrorResponse(ErrorCode code) {
+        return ResponseEntity
+                .status(code.getStatus())
+                .body(new ErrorResponse(code.getStatus(), code.getMessage()));
     }
 }
