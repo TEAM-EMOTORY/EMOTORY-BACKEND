@@ -10,12 +10,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/play-sessions")
 public class StoryResultController {
 
     private final StoryResultService storyResultService;
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/api/play-sessions/{playSessionId}/results")
+    @PostMapping("/{playSessionId}/results")
     public void createStoryResult(
             @PathVariable Long playSessionId,
             @Valid @RequestBody StoryResultCreateRequest request
@@ -26,7 +27,7 @@ public class StoryResultController {
         );
     }
 
-    @GetMapping("/api/story-results/{playSessionId}")
+    @GetMapping("/{playSessionId}/results")
     public StoryResultResponse getStoryResult(
             @PathVariable Long playSessionId
     ) {
