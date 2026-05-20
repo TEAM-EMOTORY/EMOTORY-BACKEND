@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/play-sessions/{playSessionId}/histories")
+@RequestMapping("/api/play-sessions")
 public class PlayHistoryController {
 
     private final PlayHistoryService playHistoryService;
 
-    @GetMapping
+    @GetMapping("/{playSessionId}/histories")
     public PlayHistoryListResponse getPlayHistories(
             @PathVariable Long playSessionId
     ) {
