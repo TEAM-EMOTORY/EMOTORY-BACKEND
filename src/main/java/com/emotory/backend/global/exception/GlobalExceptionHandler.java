@@ -3,6 +3,8 @@ package com.emotory.backend.global.exception;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -32,6 +34,37 @@ public class GlobalExceptionHandler {
         log.warn("MethodArgumentTypeMismatchException 발생: parameter={}, value={}", e.getName(), e.getValue());
 
         return buildErrorResponse(code);
+    }
+
+    /**
+     * @Valid 검증 예외 처리
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        String message = e.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .findFirst()
+                .map(fieldError -> fieldError.getDefaultMessage())
+                .orElse(ErrorCode.INVALID_INPUT.getMessage());
+
+        log.warn("ValidationException 발생: {}", message);
+
+        return ResponseEntity
+                .status(ErrorCode.INVALID_INPUT.getStatus())
+                .body(new ErrorResponse(ErrorCode.INVALID_INPUT.getStatus(), message));
+    }
+
+    /**
+     * 요청 본문 파싱 예외 처리
+     */
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+        log.warn("HttpMessageNotReadableException 발생: {}", e.getMessage());
+
+        return ResponseEntity
+                .status(ErrorCode.INVALID_INPUT.getStatus())
+                .body(new ErrorResponse(ErrorCode.INVALID_INPUT.getStatus(), ErrorCode.INVALID_INPUT.getMessage()));
     }
 
     /**
