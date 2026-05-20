@@ -19,4 +19,8 @@ public class Story {
 
     @Column(nullable = false)
     private String description;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Emotion emotion;
 }
