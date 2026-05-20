@@ -8,7 +8,7 @@ import com.emotory.backend.domain.playSession.repository.PlaySessionRepository;
 import com.emotory.backend.domain.storyNode.entity.StoryNode;
 import com.emotory.backend.domain.storyNode.repository.StoryNodeRepository;
 import com.emotory.backend.global.exception.playSession.PlaySessionNotFoundException;
-import com.emotory.backend.global.exception.StoryNode.StoryNodeNotFoundException;
+import com.emotory.backend.global.exception.storyNode.StoryNodeNotFoundException;
 import com.emotory.backend.global.s3.service.S3FileService;
 import com.emotory.backend.global.s3.service.S3StorageService;
 import lombok.RequiredArgsConstructor;
