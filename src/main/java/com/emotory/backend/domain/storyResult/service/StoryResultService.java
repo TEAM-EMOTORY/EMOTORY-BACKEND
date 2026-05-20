@@ -12,7 +12,7 @@ import com.emotory.backend.domain.storyResult.dto.response.StoryResultResponse;
 import com.emotory.backend.domain.storyResult.entity.StoryResult;
 import com.emotory.backend.domain.storyResult.exception.StoryResultNotFoundException;
 import com.emotory.backend.domain.storyResult.repository.StoryResultRepository;
-import com.emotory.backend.global.exception.playSesstion.PlaySessionNotFoundException;
+import com.emotory.backend.global.exception.playSession.PlaySessionNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -18,7 +18,7 @@ public class StoryResultController {
     @PostMapping("/api/play-sessions/{playSessionId}/results")
     public void createStoryResult(
             @PathVariable Long playSessionId,
-            @Valid @RequestBody StoryResultCr현eateRequest request
+            @Valid @RequestBody StoryResultCreateRequest request
     ) {
         storyResultService.createStoryResult(
                 playSessionId,

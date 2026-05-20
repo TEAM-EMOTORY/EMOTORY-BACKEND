@@ -21,11 +21,12 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column
     private Long age;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String role;
+    private MemberRole role;
 
     @Column(name = "face_image_url", nullable = false)
     private String faceImageUrl;
@@ -35,4 +36,22 @@ public class Member extends BaseTimeEntity {
 
     @Column(name = "privacy_agreed_at", nullable = false)
     private LocalDateTime privacyAgreedAt;
+
+    private Member(
+            String name,
+            String faceImageUrl,
+            MemberRole role,
+            Boolean isPrivacyAgreed,
+            LocalDateTime privacyAgreedAt
+    ) {
+        this.name = name;
+        this.faceImageUrl = faceImageUrl;
+        this.role = role;
+        this.isPrivacyAgreed = isPrivacyAgreed;
+        this.privacyAgreedAt = privacyAgreedAt;
+    }
+
+    public static Member create(String name, String faceImageUrl) {
+        return new Member(name, faceImageUrl, MemberRole.USER, true, LocalDateTime.now());
+    }
 }
