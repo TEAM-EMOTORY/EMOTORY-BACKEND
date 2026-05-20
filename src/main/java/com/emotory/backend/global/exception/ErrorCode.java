@@ -22,12 +22,19 @@ public enum ErrorCode {
 
     // 404 error
     NOT_FOUND(404, "존재하지 않는 리소스입니다."),
+    MEMBER_NOT_FOUND(404, "회원을 찾을 수 없습니다."),
     S3_FILE_NOT_FOUND(404, "S3 파일을 찾을 수 없습니다."),
+    PLAY_SESSION_NOT_FOUND(404, "플레이 세션을 찾을 수 없습니다."),
+    STORY_NOT_FOUND(404, "존재하지 않는 스토리입니다.."),
+    STORY_NODE_NOT_FOUND(404, "스토리 노드를 찾을 수 없습니다."),
     PLAY_HISTORY_NOT_FOUND(404, "존재하지 않는 플레이 기록입니다."),
 
     // 500 error
     INTERNAL_SERVER_ERROR(500, "서버 오류가 발생했습니다."),
-    S3_DOWNLOAD_FAILED(500, "S3 파일 다운로드에 실패했습니다.");
+    S3_DOWNLOAD_FAILED(500, "S3 파일 다운로드에 실패했습니다."),
+
+    // 502 error
+    OPEN_AI_IMAGE_FAILED(502, "OpenAI 이미지 생성에 실패했습니다.");
 
     private final int status;
     private final String message;
