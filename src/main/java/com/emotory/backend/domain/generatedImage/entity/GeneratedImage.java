@@ -28,4 +28,15 @@ public class GeneratedImage extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "node_id", nullable = false)
     private StoryNode storyNode;
+
+    public GeneratedImage(
+            String imageUrl,
+            PlaySession playSession,
+            StoryNode storyNode
+    ) {
+
+        this.imageUrl = imageUrl;
+        this.playSession = playSession;
+        this.storyNode = storyNode;
+    }
 }
