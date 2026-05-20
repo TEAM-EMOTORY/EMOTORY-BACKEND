@@ -28,4 +28,26 @@ public class StoryResult extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "play_session_id", nullable = false)
     private PlaySession playSession;
+
+    private StoryResult(
+            String summary,
+            String emotion,
+            PlaySession playSession
+    ) {
+        this.summary = summary;
+        this.emotion = emotion;
+        this.playSession = playSession;
+    }
+
+    public static StoryResult of(
+            String summary,
+            String emotion,
+            PlaySession playSession
+    ) {
+        return new StoryResult(
+                summary,
+                emotion,
+                playSession
+        );
+    }
 }

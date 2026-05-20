@@ -28,6 +28,8 @@ public enum ErrorCode {
     STORY_NOT_FOUND(404, "존재하지 않는 스토리입니다.."),
     STORY_NODE_NOT_FOUND(404, "스토리 노드를 찾을 수 없습니다."),
     PLAY_HISTORY_NOT_FOUND(404, "존재하지 않는 플레이 기록입니다."),
+    STORY_RESULT_NOT_FOUND(404, "존재하지 않는 스토리 결과입니다."),
+    ADVICE_NOT_FOUND(404, "존재하지 않는 조언입니다."),
 
     // 500 error
     INTERNAL_SERVER_ERROR(500, "서버 오류가 발생했습니다."),

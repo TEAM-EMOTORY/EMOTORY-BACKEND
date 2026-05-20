@@ -17,7 +17,7 @@ public class Advice {
     @Column(name = "advice_id", nullable = false)
     private Long id;
 
-    @Column(name = "advice_title", nullable = false)
+    @Column(name = "advice_title")
     private String title;
 
     @Size(max = 300)
@@ -27,4 +27,22 @@ public class Advice {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "result_id", nullable = false)
     private StoryResult storyResult;
+
+    private Advice(
+            String description,
+            StoryResult storyResult
+    ) {
+        this.description = description;
+        this.storyResult = storyResult;
+    }
+
+    public static Advice of(
+            String description,
+            StoryResult storyResult
+    ) {
+        return new Advice(
+                description,
+                storyResult
+        );
+    }
 }
