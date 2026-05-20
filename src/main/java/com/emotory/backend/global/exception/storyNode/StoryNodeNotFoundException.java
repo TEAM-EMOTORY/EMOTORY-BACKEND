@@ -1,4 +1,4 @@
-package com.emotory.backend.global.exception.StoryNode;
+package com.emotory.backend.global.exception.storyNode;
 
 import com.emotory.backend.global.exception.CustomException;
 import com.emotory.backend.global.exception.ErrorCode;
