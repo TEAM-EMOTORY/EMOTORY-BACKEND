@@ -1,4 +1,4 @@
-package com.emotory.backend.domain.member.exception;
+package com.emotory.backend.global.exception.member;
 
 import com.emotory.backend.global.exception.CustomException;
 import com.emotory.backend.global.exception.ErrorCode;
