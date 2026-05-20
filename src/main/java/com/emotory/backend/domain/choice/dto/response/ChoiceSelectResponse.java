@@ -1,6 +1,7 @@
 package com.emotory.backend.domain.choice.dto.response;
 
 import com.emotory.backend.domain.playSession.entity.PlaySession;
+import com.emotory.backend.domain.playSession.entity.PlaySessionStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "스토리 진행 응답")
