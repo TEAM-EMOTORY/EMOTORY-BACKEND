@@ -1,7 +1,7 @@
 package com.emotory.backend.domain.storyResult.service;
 
 import com.emotory.backend.domain.advice.entity.Advice;
-import com.emotory.backend.domain.advice.exception.AdviceNotFoundException;
+import com.emotory.backend.global.exception.advice.AdviceNotFoundException;
 import com.emotory.backend.domain.advice.repository.AdviceRepository;
 import com.emotory.backend.domain.generatedImage.entity.GeneratedImage;
 import com.emotory.backend.domain.generatedImage.repository.GeneratedImageRepository;
