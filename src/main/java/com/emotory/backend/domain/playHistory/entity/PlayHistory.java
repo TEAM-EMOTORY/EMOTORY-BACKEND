@@ -33,4 +33,25 @@ public class PlayHistory extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "choice_id", nullable = false)
     private Choice choice;
+
+    private PlayHistory(
+            Integer stepNumber,
+            PlaySession playSession,
+            StoryNode storyNode,
+            Choice choice
+    ) {
+        this.stepNumber = stepNumber;
+        this.playSession = playSession;
+        this.storyNode = storyNode;
+        this.choice = choice;
+    }
+
+    public static PlayHistory of(
+            Integer stepNumber,
+            PlaySession playSession,
+            StoryNode storyNode,
+            Choice choice
+    ) {
+        return new PlayHistory(stepNumber, playSession, storyNode, choice);
+    }
 }

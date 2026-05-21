@@ -1,7 +1,7 @@
 package com.emotory.backend.domain.playSession.service;
 
 import com.emotory.backend.domain.member.entity.Member;
-import com.emotory.backend.domain.member.exception.MemberNotFoundException;
+import com.emotory.backend.global.exception.member.MemberNotFoundException;
 import com.emotory.backend.domain.member.repository.MemberRepository;
 import com.emotory.backend.domain.playSession.dto.request.PlaySessionCreateRequest;
 import com.emotory.backend.domain.playSession.dto.response.PlaySessionResponse;

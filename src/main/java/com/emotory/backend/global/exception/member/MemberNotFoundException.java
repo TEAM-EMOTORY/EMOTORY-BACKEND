@@ -1,4 +1,4 @@
-package com.emotory.backend.domain.member.exception;
+package com.emotory.backend.global.exception.member;
 
 import com.emotory.backend.global.exception.CustomException;
 import com.emotory.backend.global.exception.ErrorCode;
@@ -6,6 +6,6 @@ import com.emotory.backend.global.exception.ErrorCode;
 public class MemberNotFoundException extends CustomException {
 
     public MemberNotFoundException() {
-        super(ErrorCode.NOT_FOUND);
+        super(ErrorCode.MEMBER_NOT_FOUND);
     }
 }
