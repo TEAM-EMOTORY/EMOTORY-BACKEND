@@ -47,6 +47,7 @@ public class PlaySession extends BaseTimeEntity {
         this.status = PlaySessionStatus.PLAYING;
     }
 
+    // 현재 노드 변경
     public void changeCurrentNode(
             StoryNode node
     ) {
@@ -54,6 +55,7 @@ public class PlaySession extends BaseTimeEntity {
         this.currentNode = node;
     }
 
+    // 플레이 종료
     public void end() {
         this.status = PlaySessionStatus.ENDED;
     }
