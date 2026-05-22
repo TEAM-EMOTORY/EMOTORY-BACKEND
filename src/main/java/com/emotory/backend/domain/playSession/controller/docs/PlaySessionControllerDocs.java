@@ -10,7 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @Tag(
-        name = "PlaySession",
+        name = "플레이 세션",
         description = "스토리 플레이 세션 API"
 )
 public interface PlaySessionControllerDocs {

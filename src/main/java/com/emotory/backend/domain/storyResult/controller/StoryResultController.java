@@ -1,5 +1,6 @@
 package com.emotory.backend.domain.storyResult.controller;
 
+import com.emotory.backend.domain.storyResult.controller.docs.StoryResultControllerDocs;
 import com.emotory.backend.domain.storyResult.dto.request.StoryResultCreateRequest;
 import com.emotory.backend.domain.storyResult.dto.response.StoryResultResponse;
 import com.emotory.backend.domain.storyResult.service.StoryResultService;
@@ -11,10 +12,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/play-sessions")
-public class StoryResultController {
+public class StoryResultController implements StoryResultControllerDocs {
 
     private final StoryResultService storyResultService;
 
+    @Override
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{playSessionId}/results")
     public void createStoryResult(
@@ -27,6 +29,7 @@ public class StoryResultController {
         );
     }
 
+    @Override
     @GetMapping("/{playSessionId}/results")
     public StoryResultResponse getStoryResult(
             @PathVariable Long playSessionId

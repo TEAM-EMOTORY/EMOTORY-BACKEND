@@ -2,6 +2,7 @@ package com.emotory.backend.domain.image.controller;
 
 import com.emotory.backend.domain.image.dto.request.AiImageGenerateRequest;
 import com.emotory.backend.domain.image.dto.response.AiImageGenerateResponse;
+import com.emotory.backend.domain.image.controller.docs.AiImageControllerDocs;
 import com.emotory.backend.domain.image.service.AiImageGenerateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,10 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/images")
 @RequiredArgsConstructor
-public class AiImageController {
+public class AiImageController implements AiImageControllerDocs {
 
     private final AiImageGenerateService aiImageGenerateService;
 
+    @Override
     @PostMapping("/generate")
     public AiImageGenerateResponse generateImage(
             @RequestBody AiImageGenerateRequest request
