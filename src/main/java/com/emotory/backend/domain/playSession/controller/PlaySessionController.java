@@ -16,6 +16,7 @@ public class PlaySessionController implements PlaySessionControllerDocs {
     private final PlaySessionService playSessionService;
 
     // 플레이 세션 생성
+    @Override
     @PostMapping
     public PlaySessionResponse create(
             @Valid
@@ -29,6 +30,7 @@ public class PlaySessionController implements PlaySessionControllerDocs {
     }
 
     // 플레이 세션 조회
+    @Override
     @GetMapping("/{playSessionId}")
     public PlaySessionResponse get(
             @PathVariable Long playSessionId
@@ -40,6 +42,7 @@ public class PlaySessionController implements PlaySessionControllerDocs {
     }
 
     // 플레이 종료
+    @Override
     @PatchMapping("/{playSessionId}/end")
     public void end(
             @PathVariable Long playSessionId

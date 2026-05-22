@@ -14,6 +14,7 @@ public class ChoiceController implements ChoiceControllerDocs {
 
     private final ChoiceService choiceService;
 
+    @Override
     @PostMapping("/{playSessionId}/choices")
     public ChoiceSelectResponse selectChoice(
             @PathVariable

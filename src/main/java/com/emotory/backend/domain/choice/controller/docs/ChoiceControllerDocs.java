@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Tag(
-        name = "Choice",
+        name = "선택지",
         description = "스토리 선택지 진행 API"
 )
 public interface ChoiceControllerDocs {
