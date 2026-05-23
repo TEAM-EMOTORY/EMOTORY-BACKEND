@@ -49,6 +49,18 @@ public class S3FileService {
         return "https://" + cloudFrontDomain + "/" + key;
     }
 
+    /**
+     * 얼굴 원본 이미지 조회 URL
+     */
+    public String createFaceImageUrl(String key) {
+
+        if (key == null || !key.startsWith("faces/")) {
+            throw new UnsupportedImageType();
+        }
+
+        return "https://" + cloudFrontDomain + "/" + key;
+    }
+
     private String extractExtension(String contentType) {
 
         return switch (contentType) {

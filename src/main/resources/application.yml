@@ -23,3 +23,7 @@ cloud:
         expiration-minutes: 10 # presigned URL 만료 시간 (분 단위)
     cloudfront:
       domain: ${AWS_CLOUDFRONT_DOMAIN}
+
+openai:
+  api-key: ${OPENAI_API_KEY}
+  base-url: https://api.openai.com

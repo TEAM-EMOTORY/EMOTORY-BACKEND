@@ -2,6 +2,7 @@ package com.emotory.backend.domain.playSession.entity;
 
 import com.emotory.backend.domain.member.entity.Member;
 import com.emotory.backend.domain.story.entity.Story;
+import com.emotory.backend.domain.storyNode.entity.StoryNode;
 import com.emotory.backend.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -18,11 +19,13 @@ public class PlaySession extends BaseTimeEntity {
     @Column(name = "play_session_id", nullable = false)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String status;
+    private PlaySessionStatus status;
 
-    @Column(name = "current_node_id")
-    private Long currentNodeId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "current_node_id")
+    private StoryNode currentNode;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
@@ -31,4 +34,29 @@ public class PlaySession extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "story_id", nullable = false)
     private Story story;
+
+    public PlaySession(
+            Member member,
+            Story story,
+            StoryNode currentNode
+    ) {
+
+        this.member = member;
+        this.story = story;
+        this.currentNode = currentNode;
+        this.status = PlaySessionStatus.PLAYING;
+    }
+
+    // 현재 노드 변경
+    public void changeCurrentNode(
+            StoryNode node
+    ) {
+
+        this.currentNode = node;
+    }
+
+    // 플레이 종료
+    public void end() {
+        this.status = PlaySessionStatus.ENDED;
+    }
 }

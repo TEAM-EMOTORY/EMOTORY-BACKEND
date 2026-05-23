@@ -7,7 +7,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     show-sql: false         #성능 & 보안 이유로 비활성화
     properties:
       hibernate:
