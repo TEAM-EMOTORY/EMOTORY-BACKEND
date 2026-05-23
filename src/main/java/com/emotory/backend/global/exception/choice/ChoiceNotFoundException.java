@@ -1,4 +1,4 @@
-package com.emotory.backend.global.exception.Choice;
+package com.emotory.backend.global.exception.choice;
 
 import com.emotory.backend.global.exception.CustomException;
 import com.emotory.backend.global.exception.ErrorCode;

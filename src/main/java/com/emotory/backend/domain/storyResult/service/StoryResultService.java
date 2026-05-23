@@ -10,7 +10,7 @@ import com.emotory.backend.domain.playSession.repository.PlaySessionRepository;
 import com.emotory.backend.domain.storyResult.dto.request.StoryResultCreateRequest;
 import com.emotory.backend.domain.storyResult.dto.response.StoryResultResponse;
 import com.emotory.backend.domain.storyResult.entity.StoryResult;
-import com.emotory.backend.domain.storyResult.exception.StoryResultNotFoundException;
+import com.emotory.backend.global.exception.storyResult.StoryResultNotFoundException;
 import com.emotory.backend.domain.storyResult.repository.StoryResultRepository;
 import com.emotory.backend.global.exception.playSession.PlaySessionNotFoundException;
 import lombok.RequiredArgsConstructor;
