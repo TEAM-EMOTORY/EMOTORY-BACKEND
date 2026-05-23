@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/play-sessions")
+@RequestMapping("/play-sessions")
 public class ChoiceController implements ChoiceControllerDocs {
 
     private final ChoiceService choiceService;

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/play-sessions")
+@RequestMapping("/play-sessions")
 public class PlaySessionController implements PlaySessionControllerDocs {
 
     private final PlaySessionService playSessionService;
