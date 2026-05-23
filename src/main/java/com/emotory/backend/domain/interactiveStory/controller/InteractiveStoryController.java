@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/interactive-stories")
+@RequestMapping("/interactive-stories")
 public class InteractiveStoryController {
 
     private final InteractiveStoryService interactiveStoryService;
