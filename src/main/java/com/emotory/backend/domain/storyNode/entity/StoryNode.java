@@ -32,4 +32,20 @@ public class StoryNode {
     @Enumerated(EnumType.STRING)
     @Column(name = "node_emotion")
     private Emotion emotion;
+
+    public static StoryNode create(
+            Story story,
+            String content,
+            Integer nodeOrder,
+            Boolean isEnding,
+            Emotion emotion
+    ) {
+        StoryNode storyNode = new StoryNode();
+        storyNode.story = story;
+        storyNode.content = content;
+        storyNode.nodeOrder = nodeOrder;
+        storyNode.isEnding = isEnding;
+        storyNode.emotion = emotion;
+        return storyNode;
+    }
 }

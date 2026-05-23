@@ -25,4 +25,16 @@ public class Choice {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "node_id", nullable = false)
     private StoryNode storyNode;
+
+    public static Choice create(
+            StoryNode storyNode,
+            String content,
+            StoryNode nextNode
+    ) {
+        Choice choice = new Choice();
+        choice.storyNode = storyNode;
+        choice.content = content;
+        choice.nextNode = nextNode;
+        return choice;
+    }
 }
