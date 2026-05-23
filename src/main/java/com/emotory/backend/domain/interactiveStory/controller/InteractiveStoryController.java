@@ -1,5 +1,6 @@
 package com.emotory.backend.domain.interactiveStory.controller;
 
+import com.emotory.backend.domain.interactiveStory.controller.docs.InteractiveStoryControllerDocs;
 import com.emotory.backend.domain.interactiveStory.dto.request.InteractiveStoryCreateRequest;
 import com.emotory.backend.domain.interactiveStory.dto.response.InteractiveStoryCreateResponse;
 import com.emotory.backend.domain.interactiveStory.service.InteractiveStoryService;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/interactive-stories")
-public class InteractiveStoryController {
+public class InteractiveStoryController implements InteractiveStoryControllerDocs {
 
     private final InteractiveStoryService interactiveStoryService;
 
