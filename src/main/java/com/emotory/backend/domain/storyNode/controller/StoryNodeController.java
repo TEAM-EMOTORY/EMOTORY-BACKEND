@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/story-nodes")
+@RequestMapping("/story-nodes")
 public class StoryNodeController implements StoryNodeControllerDocs {
 
     private final StoryNodeService storyNodeService;

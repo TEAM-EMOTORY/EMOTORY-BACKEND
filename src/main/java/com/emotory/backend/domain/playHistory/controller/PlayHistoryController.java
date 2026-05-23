@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/play-sessions")
+@RequestMapping("/play-sessions")
 public class PlayHistoryController implements PlayHistoryControllerDocs {
 
     private final PlayHistoryService playHistoryService;
