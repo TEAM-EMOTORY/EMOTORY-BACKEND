@@ -6,7 +6,7 @@ import com.emotory.backend.domain.choice.entity.Choice;
 import com.emotory.backend.domain.choice.repository.ChoiceRepository;
 import com.emotory.backend.domain.playSession.entity.PlaySession;
 import com.emotory.backend.domain.playSession.repository.PlaySessionRepository;
-import com.emotory.backend.global.exception.Choice.ChoiceNotFoundException;
+import com.emotory.backend.global.exception.choice.ChoiceNotFoundException;
 import com.emotory.backend.global.exception.playSession.PlaySessionNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -23,4 +23,16 @@ public class Story {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Emotion emotion;
+
+    public static Story create(
+            String title,
+            String description,
+            Emotion emotion
+    ) {
+        Story story = new Story();
+        story.title = title;
+        story.description = description;
+        story.emotion = emotion;
+        return story;
+    }
 }

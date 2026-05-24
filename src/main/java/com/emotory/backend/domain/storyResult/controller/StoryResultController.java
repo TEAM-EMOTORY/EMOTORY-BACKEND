@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/play-sessions")
+@RequestMapping("/play-sessions")
 public class StoryResultController implements StoryResultControllerDocs {
 
     private final StoryResultService storyResultService;

@@ -1,4 +1,4 @@
-package com.emotory.backend.domain.storyResult.exception;
+package com.emotory.backend.global.exception.storyResult;
 
 import com.emotory.backend.global.exception.CustomException;
 import com.emotory.backend.global.exception.ErrorCode;
