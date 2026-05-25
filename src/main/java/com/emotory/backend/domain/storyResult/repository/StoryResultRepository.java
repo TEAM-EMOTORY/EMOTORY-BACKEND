@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface StoryResultRepository extends JpaRepository<StoryResult, Long> {
 
     Optional<StoryResult> findFirstByPlaySession_IdOrderByCreatedAtDesc(Long playSessionId);
+
+    boolean existsByPlaySession_Id(Long playSessionId);
 }

@@ -17,7 +17,7 @@ public class Advice {
     @Column(name = "advice_id", nullable = false)
     private Long id;
 
-    @Column(name = "advice_title")
+    @Column(name = "advice_title", nullable = false)
     private String title;
 
     @Size(max = 300)
@@ -29,18 +29,22 @@ public class Advice {
     private StoryResult storyResult;
 
     private Advice(
+            String title,
             String description,
             StoryResult storyResult
     ) {
+        this.title = title;
         this.description = description;
         this.storyResult = storyResult;
     }
 
     public static Advice of(
+            String title,
             String description,
             StoryResult storyResult
     ) {
         return new Advice(
+                title,
                 description,
                 storyResult
         );
