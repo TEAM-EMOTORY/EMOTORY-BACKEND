@@ -46,6 +46,7 @@ public class StoryResultService {
         StoryResult savedStoryResult = storyResultRepository.save(storyResult);
 
         Advice advice = Advice.of(
+                "감정 조언",
                 request.advice(),
                 savedStoryResult
         );
