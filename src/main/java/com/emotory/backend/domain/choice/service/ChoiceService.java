@@ -14,6 +14,7 @@ import com.emotory.backend.domain.storyResult.repository.StoryResultRepository;
 import com.emotory.backend.global.exception.CustomException;
 import com.emotory.backend.global.exception.ErrorCode;
 import com.emotory.backend.global.exception.choice.ChoiceNotFoundException;
+import com.emotory.backend.global.exception.choice.InValidInputException;
 import com.emotory.backend.global.exception.playSession.PlaySessionNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -53,11 +54,11 @@ public class ChoiceService {
                 );
 
         if (Boolean.TRUE.equals(playSession.getCurrentNode().getIsEnding())) {
-            throw new CustomException(ErrorCode.INVALID_INPUT);
+            throw new InValidInputException();
         }
 
         if (!choice.getStoryNode().getId().equals(playSession.getCurrentNode().getId())) {
-            throw new CustomException(ErrorCode.INVALID_INPUT);
+            throw new InValidInputException();
         }
 
         StoryNode nextNode = choice.getNextNode();
