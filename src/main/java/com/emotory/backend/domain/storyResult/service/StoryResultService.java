@@ -17,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -61,9 +63,19 @@ public class StoryResultService {
                 .findFirstByPlaySession_IdOrderByCreatedAtDesc(playSessionId)
                 .orElseThrow(StoryResultNotFoundException::new);
 
-        Advice advice = adviceRepository
-                .findFirstByStoryResult_IdOrderByIdDesc(storyResult.getId())
-                .orElseThrow(AdviceNotFoundException::new);
+        List<StoryResultResponse.AdviceResponse> advices = adviceRepository
+                .findAllByStoryResult_IdOrderByIdAsc(storyResult.getId())
+                .stream()
+                .map(advice -> new StoryResultResponse.AdviceResponse(
+                        advice.getId(),
+                        advice.getTitle(),
+                        advice.getDescription()
+                ))
+                .toList();
+
+        if (advices.isEmpty()) {
+            throw new AdviceNotFoundException();
+        }
 
         String generatedImageUrl = generatedImageRepository
                 .findByPlaySessionAndStoryNode(
@@ -76,7 +88,7 @@ public class StoryResultService {
         return new StoryResultResponse(
                 storyResult.getSummary(),
                 storyResult.getEmotion(),
-                advice.getDescription(),
+                advices,
                 generatedImageUrl
         );
     }
