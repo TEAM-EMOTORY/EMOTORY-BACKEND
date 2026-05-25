@@ -124,11 +124,17 @@ public class InteractiveStoryService {
     }
 
     private String buildEndingContent(StoryEndingRequest ending) {
+        String advices = ending.advices()
+                .stream()
+                .map(advice -> "조언: " + advice.title() + " | " + advice.description())
+                .reduce((left, right) -> left + "\n" + right)
+                .orElse("");
+
         return String.join("\n",
                 ending.summary(),
                 "느낀 감정: " + ending.emotionLabel(),
                 "내용 요약: " + ending.contentSummary(),
-                "이런 감정이 들 때는요: " + ending.advice()
+                advices
         );
     }
 

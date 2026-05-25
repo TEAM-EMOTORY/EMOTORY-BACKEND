@@ -1,7 +1,11 @@
 package com.emotory.backend.domain.interactiveStory.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+
+import java.util.List;
 
 @Schema(description = "스토리 엔딩 요청")
 public record StoryEndingRequest(
@@ -22,8 +26,21 @@ public record StoryEndingRequest(
         @NotBlank(message = "내용 요약은 필수입니다.")
         String contentSummary,
 
-        @Schema(description = "감정 조언", example = "행복한 순간은 함께 나누면 더 커져요.")
-        @NotBlank(message = "조언은 필수입니다.")
-        String advice
+        @Schema(description = "감정 조언 목록")
+        @Valid
+        @NotEmpty(message = "조언은 최소 1개 이상 필요합니다.")
+        List<AdviceRequest> advices
 ) {
+
+    public record AdviceRequest(
+
+            @Schema(description = "조언 제목", example = "감정 조언")
+            @NotBlank(message = "조언 제목은 필수입니다.")
+            String title,
+
+            @Schema(description = "조언 내용", example = "행복한 순간은 함께 나누면 더 커져요.")
+            @NotBlank(message = "조언 내용은 필수입니다.")
+            String description
+    ) {
+    }
 }
