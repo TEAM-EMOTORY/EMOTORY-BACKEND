@@ -11,11 +11,16 @@ import com.emotory.backend.domain.playSession.repository.PlaySessionRepository;
 import com.emotory.backend.domain.storyNode.entity.StoryNode;
 import com.emotory.backend.domain.storyResult.entity.StoryResult;
 import com.emotory.backend.domain.storyResult.repository.StoryResultRepository;
+import com.emotory.backend.global.exception.CustomException;
+import com.emotory.backend.global.exception.ErrorCode;
 import com.emotory.backend.global.exception.choice.ChoiceNotFoundException;
 import com.emotory.backend.global.exception.playSession.PlaySessionNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +51,14 @@ public class ChoiceService {
                 ).orElseThrow(
                         ChoiceNotFoundException::new
                 );
+
+        if (Boolean.TRUE.equals(playSession.getCurrentNode().getIsEnding())) {
+            throw new CustomException(ErrorCode.INVALID_INPUT);
+        }
+
+        if (!choice.getStoryNode().getId().equals(playSession.getCurrentNode().getId())) {
+            throw new CustomException(ErrorCode.INVALID_INPUT);
+        }
 
         StoryNode nextNode = choice.getNextNode();
 
@@ -84,11 +97,6 @@ public class ChoiceService {
                 "느낀 감정:"
         );
 
-        String advice = extractValue(
-                lines,
-                "이런 감정이 들 때는요:"
-        );
-
         StoryResult storyResult = StoryResult.of(
                 summary,
                 emotion,
@@ -99,14 +107,13 @@ public class ChoiceService {
                 storyResult
         );
 
-        Advice adviceEntity = Advice.of(
-                "감정 조언",
-                advice,
+        List<Advice> advices = extractAdvices(
+                lines,
                 savedStoryResult
         );
 
-        adviceRepository.save(
-                adviceEntity
+        adviceRepository.saveAll(
+                advices
         );
     }
 
@@ -121,5 +128,32 @@ public class ChoiceService {
         }
 
         return "";
+    }
+
+    private List<Advice> extractAdvices(
+            String[] lines,
+            StoryResult storyResult
+    ) {
+        return Arrays.stream(lines)
+                .filter(line -> line.startsWith("조언:"))
+                .map(line -> line.substring("조언:".length()).trim())
+                .map(line -> {
+                    String[] parts = line.split("\\|", 2);
+
+                    String title = parts.length > 0 && !parts[0].isBlank()
+                            ? parts[0].trim()
+                            : "감정 조언";
+
+                    String description = parts.length > 1
+                            ? parts[1].trim()
+                            : "";
+
+                    return Advice.of(
+                            title,
+                            description,
+                            storyResult
+                    );
+                })
+                .toList();
     }
 }

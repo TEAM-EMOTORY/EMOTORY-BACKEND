@@ -16,7 +16,7 @@ public class StoryNode {
     @Column(name = "node_id", nullable = false)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
     @Column(name = "node_order", nullable = false)
