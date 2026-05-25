@@ -35,6 +35,7 @@ public class StoryNodeService {
                 storyNode.getId(),
                 storyNode.getContent(),
                 storyNode.getNodeOrder(),
+                storyNode.getIsEnding(),
                 choices
         );
     }

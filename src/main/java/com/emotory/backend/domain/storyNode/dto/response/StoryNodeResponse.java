@@ -6,6 +6,7 @@ public record StoryNodeResponse(
         Long nodeId,
         String content,
         Integer nodeOrder,
+        Boolean isEnding,
         List<ChoiceResponse> choices
 ) {
 
