@@ -17,5 +17,9 @@ public enum Emotion {
     // 신남
     EXCITED,
     // 부끄러움
-    EMBARRASSED
+    EMBARRASSED,
+    // 두려움
+    FEAR,
+    // 놀라움
+    SURPRISED
 }
