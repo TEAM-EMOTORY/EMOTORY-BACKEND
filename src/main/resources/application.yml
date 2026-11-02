@@ -1,6 +1,10 @@
 spring:
   profiles:
     active: ${SPRING_PROFILES_ACTIVE}
+  flyway:
+    # 기존 DB의 최초 도입 시에만 환경변수로 baseline 등록을 허용합니다.
+    baseline-on-migrate: ${FLYWAY_BASELINE_ON_MIGRATE:false}
+    baseline-version: 0
     include:
 
 server:

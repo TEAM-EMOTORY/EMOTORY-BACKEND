@@ -1,6 +1,8 @@
 package com.emotory.backend.global.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import com.emotory.backend.global.exception.authoring.AuthoringException;
+import com.emotory.backend.global.exception.authoring.AuthoringErrorResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -11,6 +13,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(AuthoringException.class)
+    public ResponseEntity<AuthoringErrorResponse> handleAuthoringException(AuthoringException e) {
+        ErrorCode code = e.getErrorCode();
+        log.warn("AuthoringException 발생: {}", code.name());
+        return ResponseEntity.status(code.getStatus())
+                .body(new AuthoringErrorResponse(code.getStatus(), code.getMessage(), e.getErrors()));
+    }
 
     /**
      * CustomException 처리

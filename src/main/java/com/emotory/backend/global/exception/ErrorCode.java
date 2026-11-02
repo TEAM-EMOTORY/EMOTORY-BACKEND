@@ -12,6 +12,9 @@ public enum ErrorCode {
     NO_FEED_UPDATE_CONTENT_EXCEPTION(400, "수정할 내용이 없습니다."),
     UNSUPPORTED_IMAGE_TYPE(400, "지원하지 않는 이미지 타입입니다."),
     UNSUPPORTED_FILE_FORMAT(400, "지원하지 않는 파일 형식입니다."),
+    UNSUPPORTED_EMOTION_PATTERN(400, "지원하지 않는 감정 패턴입니다."),
+
+    AUTHORING_DUPLICATE_ID(400, "초안의 ID가 중복됩니다."),
 
     // 401 error
     UNAUTHORIZED(401, "인증이 필요합니다."),
@@ -31,9 +34,18 @@ public enum ErrorCode {
     STORY_RESULT_NOT_FOUND(404, "존재하지 않는 스토리 결과입니다."),
     ADVICE_NOT_FOUND(404, "존재하지 않는 조언입니다."),
     CHOICE_NOT_FOUND(404,"존재하지 않는 선택지입니다."),
+    EMOTION_DIARY_NOT_FOUND(404, "감정일기를 찾을 수 없습니다."),
+    DIARY_QUESTION_NOT_FOUND(404, "감정일기 질문을 찾을 수 없습니다."),
+    WEATHER_RECORD_NOT_FOUND(404, "감정일기 날씨 정보를 찾을 수 없습니다."),
+
+    AUTHORING_DRAFT_NOT_FOUND(404, "동화 초안을 찾을 수 없습니다."),
+
+    // 409 error
+    AUTHORING_REVISION_CONFLICT(409, "초안이 변경되었습니다. 최신 초안을 다시 조회하세요."),
 
     // 500 error
     INTERNAL_SERVER_ERROR(500, "서버 오류가 발생했습니다."),
+    KMA_SERVICE_KEY_NOT_CONFIGURED(500, "기상청 API 서비스 키가 설정되지 않았습니다."),
     S3_DOWNLOAD_FAILED(500, "S3 파일 다운로드에 실패했습니다."),
 
     // 502 error
