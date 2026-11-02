@@ -48,16 +48,7 @@ public class ExternalAiImageClient {
         ).contentType(MediaType.IMAGE_PNG);
 
         // 프롬프트
-        builder.part(
-                "prompt",
-                """
-                Turn this child into a cute 2D storybook character.
-                Soft pastel colors.
-                Simple children's illustration.
-                Keep facial identity.
-                Scene:
-                """ + prompt
-        );
+        builder.part("prompt", prompt);
 
         // 모델
         builder.part("model", "gpt-image-1");
