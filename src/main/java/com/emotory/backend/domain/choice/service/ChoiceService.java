@@ -7,12 +7,12 @@ import com.emotory.backend.domain.choice.dto.response.ChoiceSelectResponse;
 import com.emotory.backend.domain.choice.entity.Choice;
 import com.emotory.backend.domain.choice.repository.ChoiceRepository;
 import com.emotory.backend.domain.playSession.entity.PlaySession;
+import com.emotory.backend.domain.playHistory.entity.PlayHistory;
+import com.emotory.backend.domain.playHistory.repository.PlayHistoryRepository;
 import com.emotory.backend.domain.playSession.repository.PlaySessionRepository;
 import com.emotory.backend.domain.storyNode.entity.StoryNode;
 import com.emotory.backend.domain.storyResult.entity.StoryResult;
 import com.emotory.backend.domain.storyResult.repository.StoryResultRepository;
-import com.emotory.backend.global.exception.CustomException;
-import com.emotory.backend.global.exception.ErrorCode;
 import com.emotory.backend.global.exception.choice.ChoiceNotFoundException;
 import com.emotory.backend.global.exception.choice.InValidInputException;
 import com.emotory.backend.global.exception.playSession.PlaySessionNotFoundException;
@@ -32,6 +32,7 @@ public class ChoiceService {
     private final PlaySessionRepository playSessionRepository;
     private final StoryResultRepository storyResultRepository;
     private final AdviceRepository adviceRepository;
+    private final PlayHistoryRepository playHistoryRepository;
 
     @Transactional
     public ChoiceSelectResponse selectChoice(
@@ -62,6 +63,14 @@ public class ChoiceService {
         }
 
         StoryNode nextNode = choice.getNextNode();
+
+        // 이동 전 장면을 기록하며, 장면 이동과 결과 생성에 실패하면 함께 롤백한다.
+        playHistoryRepository.save(PlayHistory.of(
+                playHistoryRepository.findLastStep(playSessionId) + 1,
+                playSession,
+                playSession.getCurrentNode(),
+                choice
+        ));
 
         playSession.changeCurrentNode(
                 nextNode
