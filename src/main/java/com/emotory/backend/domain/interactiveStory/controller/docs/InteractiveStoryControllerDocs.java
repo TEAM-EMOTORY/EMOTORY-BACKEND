@@ -69,7 +69,7 @@ public interface InteractiveStoryControllerDocs {
 
                     인터랙티브 스토리를 삭제합니다.
 
-                    - 진행 중이거나 종료된 플레이 세션이 있으면 삭제할 수 없습니다(409).
+                    - 플레이 세션이나 공개 기록이 있으면 삭제할 수 없습니다(409).
                     - Choice 데이터를 먼저 삭제합니다.
                     - 이후 StoryNode 데이터를 삭제합니다.
                     - 마지막으로 Story 데이터를 삭제합니다.
@@ -99,13 +99,13 @@ public interface InteractiveStoryControllerDocs {
     )
     @ApiResponse(
             responseCode = "409",
-            description = "플레이 세션이 있어 삭제할 수 없음",
+            description = "플레이 세션 또는 공개 기록이 있어 삭제할 수 없음",
             content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     examples = @ExampleObject(value = """
                             {
                               "status": 409,
-                              "message": "플레이 세션이 있는 동화는 삭제할 수 없습니다."
+                              "message": "플레이 세션이 있거나 공개 기록이 있는 동화는 삭제할 수 없습니다."
                             }
                             """)
             )

@@ -3,6 +3,9 @@ package com.emotory.backend.domain.authoring.service;
 import com.emotory.backend.domain.authoring.dto.AuthoringDocument;
 import com.emotory.backend.domain.authoring.dto.AuthoringDtos.*;
 import com.emotory.backend.domain.authoring.entity.StoryDraft;
+import com.emotory.backend.domain.authoring.entity.StoryPublication;
+import com.emotory.backend.domain.authoring.repository.StoryPublicationRepository;
+import com.emotory.backend.domain.story.repository.StoryRepository;
 import com.emotory.backend.domain.authoring.repository.StoryDraftRepository;
 import com.emotory.backend.global.exception.ErrorCode;
 import com.emotory.backend.global.exception.authoring.AuthoringException;
@@ -21,6 +24,10 @@ public class AuthoringService {
     private final StoryDraftRepository drafts;
     private final AuthoringValidator validator;
     private final ObjectMapper mapper;
+    private final StoryPublicationRepository publications;
+    private final StoryRepository stories;
+    private final AuthoringPublicationMapper publicationMapper;
+    private final jakarta.validation.Validator constraints;
 
     @Transactional
     public DraftResponse create(CreateRequest request) {
@@ -52,6 +59,38 @@ public class AuthoringService {
     private StoryDraft find(Long id) {
         return drafts.findById(id)
                 .orElseThrow(() -> new AuthoringException(ErrorCode.AUTHORING_DRAFT_NOT_FOUND));
+    }
+
+    @Transactional
+    public PublishResponse publish(Long id, RevisionRequest request) {
+        // 저장·공개·중복 공개 요청이 같은 초안 잠금을 사용해 순서대로 처리되도록 한다.
+        StoryDraft draft = drafts.findLockedById(id)
+                .orElseThrow(() -> new AuthoringException(ErrorCode.AUTHORING_DRAFT_NOT_FOUND));
+        checkRevision(draft, request.revision());
+        if (Objects.equals(draft.getPublishedRevision(), draft.getRevision())) {
+            if (!stories.existsById(draft.getPublishedStoryId())) {
+                throw new AuthoringException(ErrorCode.AUTHORING_PUBLICATION_DELETED);
+            }
+            return publishedResponse(draft, true);
+        }
+        AuthoringDocument document = document(draft);
+        var fieldErrors = constraints.validate(document).stream()
+                .map(v -> new Issue("INVALID_FIELD", null, null, v.getPropertyPath().toString(), v.getMessage()))
+                .toList();
+        if (!fieldErrors.isEmpty()) throw new AuthoringException(ErrorCode.AUTHORING_VALIDATION_FAILED, fieldErrors);
+        ValidationResponse validation = validator.validate(document, draft.getRevision());
+        if (!validation.valid()) {
+            throw new AuthoringException(ErrorCode.AUTHORING_VALIDATION_FAILED, validation.errors());
+        }
+        var story = publicationMapper.createStory(document);
+        draft.published(story.getId());
+        publications.save(StoryPublication.of(draft));
+        return publishedResponse(draft, false);
+    }
+
+    private PublishResponse publishedResponse(StoryDraft draft, boolean reused) {
+        return new PublishResponse(draft.getId(), draft.getRevision(), draft.getPublishedStoryId(),
+                draft.getPublishedVersion(), reused);
     }
 
     private void checkRevision(StoryDraft draft, Long revision) {

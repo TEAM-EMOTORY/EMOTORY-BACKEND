@@ -15,6 +15,7 @@ public enum ErrorCode {
     UNSUPPORTED_EMOTION_PATTERN(400, "지원하지 않는 감정 패턴입니다."),
 
     AUTHORING_DUPLICATE_ID(400, "초안의 ID가 중복됩니다."),
+    AUTHORING_VALIDATION_FAILED(400, "공개할 수 없는 초안입니다. 검증 오류를 확인하세요."),
 
     // 401 error
     UNAUTHORIZED(401, "인증이 필요합니다."),
@@ -41,7 +42,8 @@ public enum ErrorCode {
     AUTHORING_DRAFT_NOT_FOUND(404, "동화 초안을 찾을 수 없습니다."),
 
     // 409 error
-    STORY_DELETE_PROTECTED(409, "플레이 세션이 있는 동화는 삭제할 수 없습니다."),
+    AUTHORING_PUBLICATION_DELETED(409, "기존 공개 동화가 없습니다. 공개 데이터를 확인하세요."),
+    STORY_DELETE_PROTECTED(409, "플레이 세션이 있거나 공개 기록이 있는 동화는 삭제할 수 없습니다."),
     AUTHORING_REVISION_CONFLICT(409, "초안이 변경되었습니다. 최신 초안을 다시 조회하세요."),
 
     // 500 error
