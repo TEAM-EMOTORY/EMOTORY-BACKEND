@@ -41,6 +41,7 @@ public enum ErrorCode {
     AUTHORING_DRAFT_NOT_FOUND(404, "동화 초안을 찾을 수 없습니다."),
 
     // 409 error
+    STORY_DELETE_PROTECTED(409, "플레이 세션이 있는 동화는 삭제할 수 없습니다."),
     AUTHORING_REVISION_CONFLICT(409, "초안이 변경되었습니다. 최신 초안을 다시 조회하세요."),
 
     // 500 error

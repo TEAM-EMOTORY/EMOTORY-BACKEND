@@ -2,6 +2,7 @@ package com.emotory.backend.domain.interactiveStory.service;
 
 import com.emotory.backend.domain.choice.entity.Choice;
 import com.emotory.backend.domain.choice.repository.ChoiceRepository;
+import com.emotory.backend.domain.playSession.repository.PlaySessionRepository;
 import com.emotory.backend.domain.interactiveStory.dto.request.*;
 import com.emotory.backend.domain.interactiveStory.dto.response.InteractiveStoryCreateResponse;
 import com.emotory.backend.domain.interactiveStory.entity.StoryNodeType;
@@ -28,6 +29,7 @@ public class InteractiveStoryService {
     private final StoryRepository storyRepository;
     private final StoryNodeRepository storyNodeRepository;
     private final ChoiceRepository choiceRepository;
+    private final PlaySessionRepository playSessionRepository;
 
     public InteractiveStoryCreateResponse create(InteractiveStoryCreateRequest request) {
         validateStory(request);
@@ -139,8 +141,13 @@ public class InteractiveStoryService {
     }
 
     public void deleteStory(Long storyId) {
-        Story story = storyRepository.findById(storyId)
+        // 세션 생성과 같은 동화 행을 잠가 검사 이후 새 세션이 생기지 않도록 한다.
+        Story story = storyRepository.findLockedById(storyId)
                 .orElseThrow(StoryNotFoundException::new);
+
+        if (playSessionRepository.existsByStory_Id(storyId)) {
+            throw new CustomException(ErrorCode.STORY_DELETE_PROTECTED);
+        }
 
         List<StoryNode> storyNodes = storyNodeRepository.findAllByStory(story);
 
