@@ -68,9 +68,10 @@ public class AuthoringService {
                 .orElseThrow(() -> new AuthoringException(ErrorCode.AUTHORING_DRAFT_NOT_FOUND));
         checkRevision(draft, request.revision());
         if (Objects.equals(draft.getPublishedRevision(), draft.getRevision())) {
-            if (!stories.existsById(draft.getPublishedStoryId())) {
-                throw new AuthoringException(ErrorCode.AUTHORING_PUBLICATION_DELETED);
-            }
+            // 중단된 동일 revision은 새 버전을 만들지 않고 기존 공개본의 제공을 재개한다.
+            var story = stories.findLockedById(draft.getPublishedStoryId())
+                    .orElseThrow(() -> new AuthoringException(ErrorCode.AUTHORING_PUBLICATION_DELETED));
+            story.changeAvailability(true);
             return publishedResponse(draft, true);
         }
         AuthoringDocument document = document(draft);

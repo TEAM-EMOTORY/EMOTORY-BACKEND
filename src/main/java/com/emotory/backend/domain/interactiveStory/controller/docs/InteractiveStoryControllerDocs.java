@@ -116,4 +116,15 @@ public interface InteractiveStoryControllerDocs {
             @PathVariable Long storyId
 
     );
+    @Operation(summary = "동화 공개 중단", description = "기존 동화 또는 최신 공개본을 목록에서 숨기고 새 플레이를 차단합니다. 기존 세션과 기록은 유지합니다. 반복 요청도 204입니다.")
+    @ApiResponse(responseCode = "204", description = "공개 중단 완료")
+    @ApiResponse(responseCode = "404", description = "동화 없음")
+    @ApiResponse(responseCode = "409", description = "이전 공개본은 변경할 수 없음")
+    ResponseEntity<Void> unpublish(@Parameter(description = "동화 ID") @PathVariable Long storyId);
+
+    @Operation(summary = "동화 제공 재개", description = "기존 동화 또는 최신 공개본의 제공을 재개합니다. 새 공개 버전은 생성하지 않으며 이전 버전의 재개는 거절합니다.")
+    @ApiResponse(responseCode = "204", description = "제공 재개 완료")
+    @ApiResponse(responseCode = "404", description = "동화 없음")
+    @ApiResponse(responseCode = "409", description = "이전 공개본은 변경할 수 없음")
+    ResponseEntity<Void> resume(@Parameter(description = "동화 ID") @PathVariable Long storyId);
 }

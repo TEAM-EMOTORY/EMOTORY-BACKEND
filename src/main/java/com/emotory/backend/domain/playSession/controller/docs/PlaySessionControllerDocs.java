@@ -23,7 +23,7 @@ public interface PlaySessionControllerDocs {
             responseCode = "200",
             description = "플레이 세션 생성 성공"
     )
-    @ApiResponse(responseCode = "409", description = "최신 공개본이 아니므로 동화 목록 재조회 필요")
+    @ApiResponse(responseCode = "409", description = "이전 공개본 또는 공개 중단 동화이므로 시작 불가")
     PlaySessionResponse create(
             @RequestBody
             PlaySessionCreateRequest request
