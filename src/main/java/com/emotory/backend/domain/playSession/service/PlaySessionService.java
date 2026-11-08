@@ -41,7 +41,7 @@ public class PlaySessionService {
                 );
 
         Story story =
-                storyRepository.findById(
+                storyRepository.findLockedById(
                         request.storyId()
 
                 ).orElseThrow(
