@@ -4,6 +4,7 @@ import com.emotory.backend.domain.choice.entity.Choice;
 import com.emotory.backend.domain.choice.repository.ChoiceRepository;
 import com.emotory.backend.domain.playSession.repository.PlaySessionRepository;
 import com.emotory.backend.domain.authoring.repository.StoryPublicationRepository;
+import com.emotory.backend.domain.authoring.repository.StoryDraftRepository;
 import com.emotory.backend.domain.interactiveStory.dto.request.*;
 import com.emotory.backend.domain.interactiveStory.dto.response.InteractiveStoryCreateResponse;
 import com.emotory.backend.domain.interactiveStory.entity.StoryNodeType;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +34,7 @@ public class InteractiveStoryService {
     private final ChoiceRepository choiceRepository;
     private final PlaySessionRepository playSessionRepository;
     private final StoryPublicationRepository publications;
+    private final StoryDraftRepository drafts;
 
     public InteractiveStoryCreateResponse create(InteractiveStoryCreateRequest request) {
         validateStory(request);
@@ -159,5 +162,18 @@ public class InteractiveStoryService {
         }
 
         storyRepository.delete(story);
+    }
+
+    public void changeAvailability(Long storyId, boolean available) {
+        // 공개·플레이 시작과 같은 초안 → 동화 잠금 순서를 사용한다.
+        publications.findByStoryId(storyId).ifPresent(publication -> {
+            var draft = drafts.findLockedById(publication.getDraftId())
+                    .orElseThrow(() -> new CustomException(ErrorCode.STORY_VERSION_UNAVAILABLE));
+            if (!Objects.equals(draft.getPublishedStoryId(), storyId)) {
+                throw new CustomException(ErrorCode.STORY_VERSION_UNAVAILABLE);
+            }
+        });
+        Story story = storyRepository.findLockedById(storyId).orElseThrow(StoryNotFoundException::new);
+        story.changeAvailability(available);
     }
 }

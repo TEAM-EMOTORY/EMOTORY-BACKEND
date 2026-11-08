@@ -14,11 +14,12 @@ import java.util.List;
 public interface StoryRepository extends JpaRepository<Story, Long> {
     @Query("""
             select s from Story s
-            where not exists (select p.id from StoryPublication p where p.storyId = s.id)
+            where s.available = true and (
+               not exists (select p.id from StoryPublication p where p.storyId = s.id)
                or exists (
                    select p.id from StoryPublication p, StoryDraft d
                    where p.storyId = s.id and p.draftId = d.id and d.publishedStoryId = s.id
-               )
+               ))
             order by s.id asc
             """)
     List<Story> findAvailableStories();

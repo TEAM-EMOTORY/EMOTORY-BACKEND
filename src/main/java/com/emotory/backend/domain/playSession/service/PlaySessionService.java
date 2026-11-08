@@ -66,6 +66,10 @@ public class PlaySessionService {
                         StoryNotFoundException::new
                 );
 
+        if (!story.isAvailable()) {
+            throw new CustomException(ErrorCode.STORY_UNPUBLISHED);
+        }
+
         StoryNode startNode =
                 storyNodeRepository
                         .findFirstByStoryOrderByNodeOrderAsc(
