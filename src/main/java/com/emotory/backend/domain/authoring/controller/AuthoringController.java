@@ -13,7 +13,7 @@ import java.net.URI;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/authoring/stories")
-@Tag(name = "동화 제작", description = "동화 초안 작성·저장 및 분기 구조 검사")
+@Tag(name = "동화 제작", description = "동화 초안 작성·저장·검증 및 공개")
 public class AuthoringController {
     private final AuthoringService authoringService;
 
@@ -38,4 +38,9 @@ public class AuthoringController {
         return authoringService.validate(id, request);
     }
 
+    @PostMapping("/{id}/publish")
+    @Operation(summary = "동화 초안 공개", description = "revision 확인 후 재검증하여 플레이 데이터를 생성합니다. 동일 revision은 기존 공개본을 반환합니다.")
+    public PublishResponse publish(@PathVariable Long id, @Valid @RequestBody RevisionRequest request) {
+        return authoringService.publish(id, request);
+    }
 }

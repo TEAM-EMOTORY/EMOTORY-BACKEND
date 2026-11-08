@@ -3,6 +3,7 @@ package com.emotory.backend.domain.interactiveStory.service;
 import com.emotory.backend.domain.choice.entity.Choice;
 import com.emotory.backend.domain.choice.repository.ChoiceRepository;
 import com.emotory.backend.domain.playSession.repository.PlaySessionRepository;
+import com.emotory.backend.domain.authoring.repository.StoryPublicationRepository;
 import com.emotory.backend.domain.interactiveStory.dto.request.*;
 import com.emotory.backend.domain.interactiveStory.dto.response.InteractiveStoryCreateResponse;
 import com.emotory.backend.domain.interactiveStory.entity.StoryNodeType;
@@ -30,6 +31,7 @@ public class InteractiveStoryService {
     private final StoryNodeRepository storyNodeRepository;
     private final ChoiceRepository choiceRepository;
     private final PlaySessionRepository playSessionRepository;
+    private final StoryPublicationRepository publications;
 
     public InteractiveStoryCreateResponse create(InteractiveStoryCreateRequest request) {
         validateStory(request);
@@ -145,7 +147,7 @@ public class InteractiveStoryService {
         Story story = storyRepository.findLockedById(storyId)
                 .orElseThrow(StoryNotFoundException::new);
 
-        if (playSessionRepository.existsByStory_Id(storyId)) {
+        if (publications.existsByStoryId(storyId) || playSessionRepository.existsByStory_Id(storyId)) {
             throw new CustomException(ErrorCode.STORY_DELETE_PROTECTED);
         }
 
