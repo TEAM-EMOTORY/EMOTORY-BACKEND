@@ -42,6 +42,7 @@ public enum ErrorCode {
     AUTHORING_DRAFT_NOT_FOUND(404, "동화 초안을 찾을 수 없습니다."),
 
     // 409 error
+    STORY_VERSION_UNAVAILABLE(409, "최신 공개본으로만 새 플레이를 시작할 수 있습니다. 동화 목록을 다시 조회하세요."),
     AUTHORING_PUBLICATION_DELETED(409, "기존 공개 동화가 없습니다. 공개 데이터를 확인하세요."),
     STORY_DELETE_PROTECTED(409, "플레이 세션이 있거나 공개 기록이 있는 동화는 삭제할 수 없습니다."),
     AUTHORING_REVISION_CONFLICT(409, "초안이 변경되었습니다. 최신 초안을 다시 조회하세요."),

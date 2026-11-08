@@ -17,12 +17,13 @@ public interface PlaySessionControllerDocs {
 
     @Operation(
             summary = "플레이 세션 생성",
-            description = "사용자의 스토리 플레이 세션을 생성합니다."
+            description = "기존 동화 또는 최신 공개본으로 세션을 생성합니다. 이전 공개본의 새 플레이는 409로 거절하며, 기존 세션은 계속 사용할 수 있습니다."
     )
     @ApiResponse(
             responseCode = "200",
             description = "플레이 세션 생성 성공"
     )
+    @ApiResponse(responseCode = "409", description = "최신 공개본이 아니므로 동화 목록 재조회 필요")
     PlaySessionResponse create(
             @RequestBody
             PlaySessionCreateRequest request
