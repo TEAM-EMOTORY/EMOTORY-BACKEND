@@ -94,7 +94,7 @@ public class PlaySessionService {
     ) {
 
         PlaySession playSession =
-                playSessionRepository.findById(
+                playSessionRepository.findLockedById(
                         playSessionId
                 ).orElseThrow(
                         PlaySessionNotFoundException::new
