@@ -7,6 +7,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "이야기")
 public interface StoryControllerDocs {
 
-    @Operation(summary = "이야기 목록 조회", description = "사용자가 선택할 수 있는 이야기 목록을 조회합니다.")
+    @Operation(summary = "이야기 목록 조회", description = "기존 동화와 각 초안의 최신 공개 동화를 조회합니다. 이전 공개본은 목록에서 제외합니다.")
     StoryListResponse getStories();
 }
