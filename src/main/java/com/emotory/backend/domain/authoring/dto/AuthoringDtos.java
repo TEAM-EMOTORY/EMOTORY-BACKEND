@@ -12,6 +12,7 @@ public final class AuthoringDtos {
     public record SaveRequest(@NotNull @PositiveOrZero Long revision,
                               @NotNull @Valid AuthoringDocument document) {}
     public record RevisionRequest(@NotNull @PositiveOrZero Long revision) {}
+    public record PublishResponse(Long draftId, long revision, Long storyId, int version, boolean reused) {}
     public record DraftResponse(Long id, long revision, Instant updatedAt,
                                 Long publishedStoryId, Long publishedRevision, AuthoringDocument document) {}
     public record Issue(String code, String nodeId, String choiceId, String field, String message) {}

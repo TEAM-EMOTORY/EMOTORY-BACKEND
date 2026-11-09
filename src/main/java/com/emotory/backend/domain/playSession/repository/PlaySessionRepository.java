@@ -10,6 +10,8 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface PlaySessionRepository extends JpaRepository<PlaySession, Long> {
+    boolean existsByStory_Id(Long storyId);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select s from PlaySession s where s.id = :id")
     Optional<PlaySession> findLockedById(@Param("id") Long id);

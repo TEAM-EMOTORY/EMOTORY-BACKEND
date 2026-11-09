@@ -24,6 +24,13 @@ public class Story {
     @Column(nullable = false)
     private Emotion emotion;
 
+    @Column(name = "is_available", nullable = false)
+    private boolean available = true;
+
+    public void changeAvailability(boolean available) {
+        this.available = available;
+    }
+
     public static Story create(
             String title,
             String description,

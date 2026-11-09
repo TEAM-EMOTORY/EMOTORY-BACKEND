@@ -69,6 +69,7 @@ public interface InteractiveStoryControllerDocs {
 
                     인터랙티브 스토리를 삭제합니다.
 
+                    - 플레이 세션이나 공개 기록이 있으면 삭제할 수 없습니다(409).
                     - Choice 데이터를 먼저 삭제합니다.
                     - 이후 StoryNode 데이터를 삭제합니다.
                     - 마지막으로 Story 데이터를 삭제합니다.
@@ -96,10 +97,34 @@ public interface InteractiveStoryControllerDocs {
                     )
             )
     )
+    @ApiResponse(
+            responseCode = "409",
+            description = "플레이 세션 또는 공개 기록이 있어 삭제할 수 없음",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    examples = @ExampleObject(value = """
+                            {
+                              "status": 409,
+                              "message": "플레이 세션이 있거나 공개 기록이 있는 동화는 삭제할 수 없습니다."
+                            }
+                            """)
+            )
+    )
     ResponseEntity<Void> delete(
 
             @Parameter(description = "스토리 ID", example = "1")
             @PathVariable Long storyId
 
     );
+    @Operation(summary = "동화 공개 중단", description = "기존 동화 또는 최신 공개본을 목록에서 숨기고 새 플레이를 차단합니다. 기존 세션과 기록은 유지합니다. 반복 요청도 204입니다.")
+    @ApiResponse(responseCode = "204", description = "공개 중단 완료")
+    @ApiResponse(responseCode = "404", description = "동화 없음")
+    @ApiResponse(responseCode = "409", description = "이전 공개본은 변경할 수 없음")
+    ResponseEntity<Void> unpublish(@Parameter(description = "동화 ID") @PathVariable Long storyId);
+
+    @Operation(summary = "동화 제공 재개", description = "기존 동화 또는 최신 공개본의 제공을 재개합니다. 새 공개 버전은 생성하지 않으며 이전 버전의 재개는 거절합니다.")
+    @ApiResponse(responseCode = "204", description = "제공 재개 완료")
+    @ApiResponse(responseCode = "404", description = "동화 없음")
+    @ApiResponse(responseCode = "409", description = "이전 공개본은 변경할 수 없음")
+    ResponseEntity<Void> resume(@Parameter(description = "동화 ID") @PathVariable Long storyId);
 }

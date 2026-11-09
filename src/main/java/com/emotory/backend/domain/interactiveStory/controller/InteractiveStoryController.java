@@ -30,4 +30,16 @@ public class InteractiveStoryController implements InteractiveStoryControllerDoc
         interactiveStoryService.deleteStory(storyId);
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("/{storyId}/unpublish")
+    public ResponseEntity<Void> unpublish(@PathVariable Long storyId) {
+        interactiveStoryService.changeAvailability(storyId, false);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{storyId}/resume")
+    public ResponseEntity<Void> resume(@PathVariable Long storyId) {
+        interactiveStoryService.changeAvailability(storyId, true);
+        return ResponseEntity.noContent().build();
+    }
 }

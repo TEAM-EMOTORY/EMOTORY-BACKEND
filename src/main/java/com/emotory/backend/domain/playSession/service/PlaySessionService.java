@@ -1,6 +1,10 @@
 package com.emotory.backend.domain.playSession.service;
 
 import com.emotory.backend.domain.member.entity.Member;
+import com.emotory.backend.domain.authoring.repository.StoryDraftRepository;
+import com.emotory.backend.domain.authoring.repository.StoryPublicationRepository;
+import com.emotory.backend.global.exception.CustomException;
+import com.emotory.backend.global.exception.ErrorCode;
 import com.emotory.backend.global.exception.member.MemberNotFoundException;
 import com.emotory.backend.domain.member.repository.MemberRepository;
 import com.emotory.backend.domain.playSession.dto.request.PlaySessionCreateRequest;
@@ -18,6 +22,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -27,6 +33,8 @@ public class PlaySessionService {
     private final MemberRepository memberRepository;
     private final StoryRepository storyRepository;
     private final StoryNodeRepository storyNodeRepository;
+    private final StoryPublicationRepository publications;
+    private final StoryDraftRepository drafts;
 
     @Transactional
     public PlaySessionResponse create(
@@ -40,13 +48,27 @@ public class PlaySessionService {
                         MemberNotFoundException::new
                 );
 
+        // 공개와 동일한 초안 잠금을 먼저 획득한 뒤 동화 잠금을 획득한다.
+        // 재공개가 먼저 끝났다면 최신 공개 ID를 확인하고 이전 버전의 새 플레이를 거절한다.
+        publications.findByStoryId(request.storyId()).ifPresent(publication -> {
+            var draft = drafts.findLockedById(publication.getDraftId())
+                    .orElseThrow(() -> new CustomException(ErrorCode.STORY_VERSION_UNAVAILABLE));
+            if (!Objects.equals(draft.getPublishedStoryId(), request.storyId())) {
+                throw new CustomException(ErrorCode.STORY_VERSION_UNAVAILABLE);
+            }
+        });
+
         Story story =
-                storyRepository.findById(
+                storyRepository.findLockedById(
                         request.storyId()
 
                 ).orElseThrow(
                         StoryNotFoundException::new
                 );
+
+        if (!story.isAvailable()) {
+            throw new CustomException(ErrorCode.STORY_UNPUBLISHED);
+        }
 
         StoryNode startNode =
                 storyNodeRepository

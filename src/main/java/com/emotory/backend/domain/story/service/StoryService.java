@@ -17,7 +17,7 @@ public class StoryService {
     private final StoryRepository storyRepository;
 
     public StoryListResponse getStories() {
-        List<StoryResponse> stories = storyRepository.findAll()
+        List<StoryResponse> stories = storyRepository.findAvailableStories()
                 .stream()
                 .map(StoryResponse::from)
                 .toList();
