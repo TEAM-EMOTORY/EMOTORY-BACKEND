@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 public enum ErrorCode {
 
     // 400 error
+    INVALID_IMAGE_REQUEST(400, "이미지 생성에 필요한 세션·장면·얼굴 사진을 확인하세요."),
+    INVALID_FACE_IMAGE(400, "10MB 이하의 PNG·JPEG·WebP 이미지가 필요합니다."),
     INVALID_INPUT(400, "잘못된 입력 값입니다."),
     NO_FEED_UPDATE_CONTENT_EXCEPTION(400, "수정할 내용이 없습니다."),
     UNSUPPORTED_IMAGE_TYPE(400, "지원하지 않는 이미지 타입입니다."),
@@ -42,6 +44,11 @@ public enum ErrorCode {
     AUTHORING_DRAFT_NOT_FOUND(404, "동화 초안을 찾을 수 없습니다."),
 
     // 409 error
+    FACE_IMAGE_LOCKED(409, "이 세션의 얼굴 사진은 변경할 수 없습니다. 새 세션을 시작하세요."),
+    IMAGE_REFERENCE_REQUIRED(409, "같은 캐릭터를 유지하려면 시작 장면의 이미지를 먼저 생성하세요."),
+    IMAGE_REFERENCE_UNAVAILABLE(409, "기존 시작 장면의 참고 이미지를 사용할 수 없습니다. 새 세션을 시작하세요."),
+    IMAGE_GENERATION_IN_PROGRESS(409, "이 세션의 이미지 생성이 진행 중입니다. 잠시 후 다시 요청하세요."),
+    IMAGE_GENERATION_EXPIRED(409, "이미지 생성 작업의 유효 시간이 만료되었습니다. 다시 요청하세요."),
     STORY_UNPUBLISHED(409, "공개 중단된 동화는 새 플레이를 시작할 수 없습니다."),
     STORY_VERSION_UNAVAILABLE(409, "최신 공개본으로만 새 플레이를 시작할 수 있습니다. 동화 목록을 다시 조회하세요."),
     AUTHORING_PUBLICATION_DELETED(409, "기존 공개 동화가 없습니다. 공개 데이터를 확인하세요."),
