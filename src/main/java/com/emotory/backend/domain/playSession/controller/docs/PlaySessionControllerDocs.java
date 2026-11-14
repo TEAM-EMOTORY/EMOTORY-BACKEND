@@ -1,6 +1,7 @@
 package com.emotory.backend.domain.playSession.controller.docs;
 
 import com.emotory.backend.domain.playSession.dto.request.PlaySessionCreateRequest;
+import com.emotory.backend.domain.playSession.dto.request.PlaySessionEndRequest;
 import com.emotory.backend.domain.playSession.dto.response.PlaySessionResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -42,16 +43,19 @@ public interface PlaySessionControllerDocs {
             Long playSessionId
     );
     @Operation(
-            summary = "플레이 종료",
-            description = "플레이 세션 상태를 종료 상태로 변경합니다."
+            summary = "플레이 종료 및 공개 여부 저장",
+            description = "결말에 도달한 플레이를 종료하며 shared=true이면 모든 진행 장면의 이미지가 준비된 경우 함께 공개합니다. "
+                    + "shared=false이면 비공개로 종료합니다. 같은 공개 여부로 재요청할 수 있지만 종료 후 공개 여부는 변경할 수 없습니다."
     )
     @ApiResponse(
             responseCode = "200",
             description = "플레이 종료 성공"
     )
+    @ApiResponse(responseCode = "409", description = "결말 미도달, 공개 이미지 누락 또는 종료 후 공개 여부 변경")
     void end(
             @Parameter(description = "플레이 세션 ID")
             @PathVariable
-            Long playSessionId
+            Long playSessionId,
+            @RequestBody PlaySessionEndRequest request
     );
 }
