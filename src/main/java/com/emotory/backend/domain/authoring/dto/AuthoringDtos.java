@@ -15,6 +15,8 @@ public final class AuthoringDtos {
     public record PublishResponse(Long draftId, long revision, Long storyId, int version, boolean reused) {}
     public record DraftResponse(Long id, long revision, Instant updatedAt,
                                 Long publishedStoryId, Long publishedRevision, AuthoringDocument document) {}
+    public record DraftSummary(Long id, String title, long revision, Instant updatedAt,
+                               Long publishedStoryId, Long publishedRevision) {}
     public record Issue(String code, String nodeId, String choiceId, String field, String message) {}
     public record ValidationResponse(long revision, boolean valid, List<Issue> errors,
                                      Integer actualMaxDepth, Map<String, Integer> depths) {}

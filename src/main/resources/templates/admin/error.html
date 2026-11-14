@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{admin/fragments :: head('요청 확인')}"></head>
+<body>
+<header th:replace="~{admin/fragments :: header}"></header>
+<main class="container panel"><h1>요청을 확인해 주세요</h1>
+    <p th:text="${error}" role="alert"></p>
+    <a th:href="@{/admin/stories}" class="button">초안 목록으로</a>
+</main>
+</body>
+</html>
