@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 
@@ -16,6 +17,12 @@ import java.net.URI;
 @Tag(name = "동화 제작", description = "동화 초안 작성·저장·검증 및 공개")
 public class AuthoringController {
     private final AuthoringService authoringService;
+
+    @GetMapping
+    @Operation(summary = "초안 목록 조회", description = "최근 수정 순으로 페이지당 20개를 조회합니다. page는 0부터 시작합니다.")
+    public Page<DraftSummary> list(@RequestParam(defaultValue = "0") int page) {
+        return authoringService.list(page);
+    }
 
     @PostMapping
     @Operation(summary = "동화 초안 생성", description = "빈 본문 또는 선택적인 title을 받아 revision 0의 빈 초안을 만듭니다.")

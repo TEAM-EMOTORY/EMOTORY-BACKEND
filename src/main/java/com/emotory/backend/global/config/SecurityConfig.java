@@ -74,12 +74,18 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // 토큰 발급·비밀번호 확인·인증 상태 확인은 인증 전에도 가능하다.
                         // permitAll이어도 변경 요청의 CSRF 검사는 그대로 수행한다.
-                        .requestMatchers("/admin/csrf", "/admin/session").permitAll()
+                        .requestMatchers("/admin/csrf", "/admin/session", "/admin/login", "/admin/assets/**").permitAll()
                         // 이 보안 설정이 담당하는 나머지 요청은 관리자만 허용한다.
                         .anyRequest().hasRole("ADMIN"))
                 .exceptionHandling(config -> config
                         // 인증이 없으면 로그인 화면 이동 대신 JSON으로 401을 반환한다.
                         .authenticationEntryPoint((request, response, error) -> {
+                            // 관리자 화면 접근은 로그인으로 안내하고, 기존 API는 JSON 응답을 유지한다.
+                            String path = request.getRequestURI().substring(request.getContextPath().length());
+                            if (path.equals("/admin") || path.equals("/admin/") || path.startsWith("/admin/stories")) {
+                                response.sendRedirect(request.getContextPath() + "/admin/login");
+                                return;
+                            }
                             response.setStatus(401);
                             response.setContentType("application/json;charset=UTF-8");
                             response.getWriter().write("{\"status\":401,\"message\":\"관리자 인증이 필요합니다.\"}");
