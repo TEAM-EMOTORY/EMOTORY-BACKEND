@@ -31,6 +31,7 @@ public enum ErrorCode {
     MEMBER_NOT_FOUND(404, "회원을 찾을 수 없습니다."),
     S3_FILE_NOT_FOUND(404, "S3 파일을 찾을 수 없습니다."),
     PLAY_SESSION_NOT_FOUND(404, "플레이 세션을 찾을 수 없습니다."),
+    SHARED_STORY_NOT_FOUND(404, "공개된 완료 스토리를 찾을 수 없습니다."),
     STORY_NOT_FOUND(404, "존재하지 않는 스토리입니다.."),
     STORY_NODE_NOT_FOUND(404, "스토리 노드를 찾을 수 없습니다."),
     PLAY_HISTORY_NOT_FOUND(404, "존재하지 않는 플레이 기록입니다."),

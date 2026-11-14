@@ -1,6 +1,7 @@
 package com.emotory.backend.domain.playHistory.repository;
 
 import com.emotory.backend.domain.playHistory.entity.PlayHistory;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,5 +15,6 @@ public interface PlayHistoryRepository extends JpaRepository<PlayHistory, Long> 
 
     int countByPlaySession_Id(Long playSessionId);
 
+    @EntityGraph(attributePaths = {"storyNode", "choice"})
     List<PlayHistory> findByPlaySession_IdOrderByStepNumberAsc(Long playSessionId);
 }
