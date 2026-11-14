@@ -1,6 +1,8 @@
 package com.emotory.backend.domain.playSession.service;
 
 import com.emotory.backend.domain.member.entity.Member;
+import com.emotory.backend.domain.generatedImage.repository.GeneratedImageRepository;
+import com.emotory.backend.domain.playHistory.repository.PlayHistoryRepository;
 import com.emotory.backend.domain.authoring.repository.StoryDraftRepository;
 import com.emotory.backend.domain.authoring.repository.StoryPublicationRepository;
 import com.emotory.backend.global.exception.CustomException;
@@ -8,8 +10,10 @@ import com.emotory.backend.global.exception.ErrorCode;
 import com.emotory.backend.global.exception.member.MemberNotFoundException;
 import com.emotory.backend.domain.member.repository.MemberRepository;
 import com.emotory.backend.domain.playSession.dto.request.PlaySessionCreateRequest;
+import com.emotory.backend.domain.playSession.dto.request.PlaySessionEndRequest;
 import com.emotory.backend.domain.playSession.dto.response.PlaySessionResponse;
 import com.emotory.backend.domain.playSession.entity.PlaySession;
+import com.emotory.backend.domain.playSession.entity.PlaySessionStatus;
 import com.emotory.backend.domain.playSession.repository.PlaySessionRepository;
 import com.emotory.backend.domain.story.entity.Story;
 import com.emotory.backend.domain.story.repository.StoryRepository;
@@ -23,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +40,8 @@ public class PlaySessionService {
     private final StoryNodeRepository storyNodeRepository;
     private final StoryPublicationRepository publications;
     private final StoryDraftRepository drafts;
+    private final PlayHistoryRepository playHistoryRepository;
+    private final GeneratedImageRepository generatedImageRepository;
 
     @Transactional
     public PlaySessionResponse create(
@@ -112,7 +119,8 @@ public class PlaySessionService {
 
     @Transactional
     public void end(
-            Long playSessionId
+            Long playSessionId,
+            PlaySessionEndRequest request
     ) {
 
         PlaySession playSession =
@@ -122,6 +130,36 @@ public class PlaySessionService {
                         PlaySessionNotFoundException::new
                 );
 
-        playSession.end();
+        if (playSession.getCurrentNode() == null
+                || !Boolean.TRUE.equals(playSession.getCurrentNode().getIsEnding())) {
+            throw new CustomException(ErrorCode.PLAY_SESSION_NOT_AT_ENDING);
+        }
+
+        if (playSession.getStatus() == PlaySessionStatus.ENDED) {
+            if (playSession.isShared() != request.shared()) {
+                throw new CustomException(ErrorCode.PLAY_SESSION_ALREADY_ENDED);
+            }
+            return;
+        }
+        if (request.shared()) {
+            validateImagesForSharing(playSession);
+        }
+        playSession.end(request.shared());
+    }
+
+    private void validateImagesForSharing(PlaySession playSession) {
+        var nodesWithImages = generatedImageRepository.findByPlaySession_Id(playSession.getId())
+                .stream()
+                .filter(image -> image.getImageUrl() != null && !image.getImageUrl().isBlank())
+                .map(image -> image.getStoryNode().getId())
+                .collect(Collectors.toSet());
+
+        boolean hasMissingImage = !nodesWithImages.contains(playSession.getCurrentNode().getId())
+                || playHistoryRepository.findByPlaySession_IdOrderByStepNumberAsc(playSession.getId())
+                .stream()
+                .anyMatch(history -> !nodesWithImages.contains(history.getStoryNode().getId()));
+        if (hasMissingImage) {
+            throw new CustomException(ErrorCode.STORY_SHARING_NOT_READY);
+        }
     }
 }

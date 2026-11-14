@@ -44,6 +44,9 @@ public enum ErrorCode {
     AUTHORING_DRAFT_NOT_FOUND(404, "동화 초안을 찾을 수 없습니다."),
 
     // 409 error
+    PLAY_SESSION_NOT_AT_ENDING(409, "결말에 도달한 뒤 플레이를 종료할 수 있습니다."),
+    PLAY_SESSION_ALREADY_ENDED(409, "이미 종료된 플레이의 공개 여부는 변경할 수 없습니다."),
+    STORY_SHARING_NOT_READY(409, "모든 진행 장면의 이미지를 생성한 후 공개할 수 있습니다."),
     FACE_IMAGE_LOCKED(409, "이 세션의 얼굴 사진은 변경할 수 없습니다. 새 세션을 시작하세요."),
     IMAGE_REFERENCE_REQUIRED(409, "같은 캐릭터를 유지하려면 시작 장면의 이미지를 먼저 생성하세요."),
     IMAGE_REFERENCE_UNAVAILABLE(409, "기존 시작 장면의 참고 이미지를 사용할 수 없습니다. 새 세션을 시작하세요."),
