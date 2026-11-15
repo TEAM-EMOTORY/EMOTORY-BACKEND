@@ -1,102 +1,52 @@
 package com.emotory.backend.domain.image.service;
 
-import com.emotory.backend.domain.generatedImage.entity.GeneratedImage;
-import com.emotory.backend.domain.generatedImage.repository.GeneratedImageRepository;
 import com.emotory.backend.domain.image.client.ExternalAiImageClient;
-import com.emotory.backend.domain.playSession.entity.PlaySession;
-import com.emotory.backend.domain.playSession.repository.PlaySessionRepository;
-import com.emotory.backend.domain.storyNode.entity.StoryNode;
-import com.emotory.backend.domain.storyNode.repository.StoryNodeRepository;
-import com.emotory.backend.global.exception.playSession.PlaySessionNotFoundException;
-import com.emotory.backend.global.exception.storyNode.StoryNodeNotFoundException;
+import com.emotory.backend.domain.image.client.ImageInput;
 import com.emotory.backend.global.s3.service.S3FileService;
 import com.emotory.backend.global.s3.service.S3StorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class AiImageGenerateService {
-
     private final S3StorageService s3StorageService;
     private final S3FileService s3FileService;
-    private final PromptTemplateService promptTemplateService;
     private final ExternalAiImageClient externalAiImageClient;
-    private final GeneratedImageRepository generatedImageRepository;
-    private final StoryNodeRepository storyNodeRepository;
-    private final PlaySessionRepository playSessionRepository;
+    private final ImageGenerationStateService state;
 
-    public String generateImage(
-            String faceImageKey,
-            Long nodeId,
-            Long playSessionId
-    ) {
-        StoryNode node =
-                storyNodeRepository.findById(nodeId)
-                        .orElseThrow(StoryNodeNotFoundException::new);
-
-        PlaySession playSession =
-                playSessionRepository.findById(playSessionId)
-                        .orElseThrow(PlaySessionNotFoundException::new);
-
-        // 이미 생성된 이미지 조회
-        GeneratedImage existingImage =
-                generatedImageRepository
-                        .findByPlaySessionAndStoryNode(
-                                playSession,
-                                node
-                        )
-                        .orElse(null);
-
-        // 이미 있으면 기존 URL 반환
-        if (existingImage != null) {
-            return existingImage.getImageUrl();
+    // 느린 외부 호출을 DB 트랜잭션과 분리해 다른 선택 요청을 오래 잠그지 않는다.
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public String generateImage(String faceImageKey, Long nodeId, Long playSessionId) {
+        var claim = state.claim(playSessionId, nodeId, faceImageKey);
+        if (claim.cachedUrl() != null) return claim.cachedUrl();
+        try {
+            byte[] faceImage;
+            if (claim.faceSnapshotKey() == null) {
+                faceImage = s3StorageService.downloadFile(claim.sourceFaceKey());
+                ImageInput input = ImageInput.from(faceImage);
+                String faceKey = "image-references/" + playSessionId + "/face-" + UUID.randomUUID() + "." + input.extension();
+                s3StorageService.uploadFile(faceKey, faceImage, input.contentType());
+                state.saveFace(claim, faceKey);
+            } else {
+                faceImage = s3StorageService.downloadFile(claim.faceSnapshotKey());
+            }
+            byte[] referenceImage = claim.referenceKey() == null ? null
+                    : s3StorageService.downloadFile(claim.referenceKey());
+            // 별도 캐릭터 생성 없이 장면당 기존과 동일하게 한 번만 생성한다.
+            byte[] generatedImage = externalAiImageClient.generateImage(faceImage, referenceImage, claim.prompt());
+            String generatedKey = s3FileService.createKey("generated", "image/png");
+            s3StorageService.uploadFile(generatedKey, generatedImage, "image/png");
+            String imageUrl = s3FileService.createGeneratedImageUrl(generatedKey);
+            return state.complete(claim, generatedKey, imageUrl);
+        } catch (RuntimeException exception) {
+            try { state.fail(claim); }
+            catch (RuntimeException stateFailure) { exception.addSuppressed(stateFailure); }
+            throw exception;
         }
-
-        // 1. 프롬프트 생성
-        String finalPrompt =
-                promptTemplateService.buildPrompt(node);
-
-        // 2. S3에서 얼굴 이미지 다운로드
-        byte[] faceImage =
-                s3StorageService.downloadFile(faceImageKey);
-
-        // 3. OpenAI 이미지 생성
-        byte[] generatedImage =
-                externalAiImageClient.generateImage(
-                        faceImage,
-                        finalPrompt
-                );
-
-        String generatedKey =
-                s3FileService.createKey(
-                        "generated",
-                        "image/png"
-                );
-
-        // 5. S3 업로드
-        s3StorageService.uploadFile(
-                generatedKey,
-                generatedImage,
-                "image/png"
-        );
-
-        // 6. CloudFront URL 생성
-        String imageUrl =
-                s3FileService.createGeneratedImageUrl(
-                        generatedKey
-                );
-
-        // 7. DB 저장
-        GeneratedImage image =
-                new GeneratedImage(
-                        imageUrl,
-                        playSession,
-                        node
-                );
-        generatedImageRepository.save(image);
-
-        // 8. 프론트 반환
-        return imageUrl;
     }
 }

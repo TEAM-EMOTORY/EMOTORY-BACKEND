@@ -11,6 +11,9 @@ import com.emotory.backend.global.exception.ErrorCode;
 import com.emotory.backend.global.exception.authoring.AuthoringException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 import tools.jackson.databind.ObjectMapper;
 
@@ -38,6 +41,14 @@ public class AuthoringService {
 
     public DraftResponse get(Long id) {
         return response(find(id));
+    }
+
+    public Page<DraftSummary> list(int page) {
+        var pageable = PageRequest.of(Math.max(0, page), 20,
+                Sort.by("updatedAt").descending().and(Sort.by("id").descending()));
+        return drafts.findAll(pageable).map(draft -> new DraftSummary(draft.getId(),
+                document(draft).title(), draft.getRevision(), draft.getUpdatedAt(),
+                draft.getPublishedStoryId(), draft.getPublishedRevision()));
     }
 
     @Transactional

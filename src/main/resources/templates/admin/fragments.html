@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${title} + ' | Emotory 관리자'">Emotory 관리자</title>
+    <link rel="stylesheet" th:href="@{/admin/assets/admin.css}">
+</head>
+<body>
+<header th:fragment="header" class="site-header">
+    <a th:href="@{/admin/stories}" class="brand">Emotory <span>이야기 작업실</span></a>
+    <form th:action="@{/admin/logout}" method="post"><button class="secondary">로그아웃</button></form>
+</header>
+</body>
+</html>

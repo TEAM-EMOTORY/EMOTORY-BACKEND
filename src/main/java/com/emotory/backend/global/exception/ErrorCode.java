@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 public enum ErrorCode {
 
     // 400 error
+    INVALID_IMAGE_REQUEST(400, "이미지 생성에 필요한 세션·장면·얼굴 사진을 확인하세요."),
+    INVALID_FACE_IMAGE(400, "10MB 이하의 PNG·JPEG·WebP 이미지가 필요합니다."),
     INVALID_INPUT(400, "잘못된 입력 값입니다."),
     NO_FEED_UPDATE_CONTENT_EXCEPTION(400, "수정할 내용이 없습니다."),
     UNSUPPORTED_IMAGE_TYPE(400, "지원하지 않는 이미지 타입입니다."),
@@ -29,6 +31,7 @@ public enum ErrorCode {
     MEMBER_NOT_FOUND(404, "회원을 찾을 수 없습니다."),
     S3_FILE_NOT_FOUND(404, "S3 파일을 찾을 수 없습니다."),
     PLAY_SESSION_NOT_FOUND(404, "플레이 세션을 찾을 수 없습니다."),
+    SHARED_STORY_NOT_FOUND(404, "공개된 완료 스토리를 찾을 수 없습니다."),
     STORY_NOT_FOUND(404, "존재하지 않는 스토리입니다.."),
     STORY_NODE_NOT_FOUND(404, "스토리 노드를 찾을 수 없습니다."),
     PLAY_HISTORY_NOT_FOUND(404, "존재하지 않는 플레이 기록입니다."),
@@ -42,6 +45,14 @@ public enum ErrorCode {
     AUTHORING_DRAFT_NOT_FOUND(404, "동화 초안을 찾을 수 없습니다."),
 
     // 409 error
+    PLAY_SESSION_NOT_AT_ENDING(409, "결말에 도달한 뒤 플레이를 종료할 수 있습니다."),
+    PLAY_SESSION_ALREADY_ENDED(409, "이미 종료된 플레이의 공개 여부는 변경할 수 없습니다."),
+    STORY_SHARING_NOT_READY(409, "모든 진행 장면의 이미지를 생성한 후 공개할 수 있습니다."),
+    FACE_IMAGE_LOCKED(409, "이 세션의 얼굴 사진은 변경할 수 없습니다. 새 세션을 시작하세요."),
+    IMAGE_REFERENCE_REQUIRED(409, "같은 캐릭터를 유지하려면 시작 장면의 이미지를 먼저 생성하세요."),
+    IMAGE_REFERENCE_UNAVAILABLE(409, "기존 시작 장면의 참고 이미지를 사용할 수 없습니다. 새 세션을 시작하세요."),
+    IMAGE_GENERATION_IN_PROGRESS(409, "이 세션의 이미지 생성이 진행 중입니다. 잠시 후 다시 요청하세요."),
+    IMAGE_GENERATION_EXPIRED(409, "이미지 생성 작업의 유효 시간이 만료되었습니다. 다시 요청하세요."),
     STORY_UNPUBLISHED(409, "공개 중단된 동화는 새 플레이를 시작할 수 없습니다."),
     STORY_VERSION_UNAVAILABLE(409, "최신 공개본으로만 새 플레이를 시작할 수 있습니다. 동화 목록을 다시 조회하세요."),
     AUTHORING_PUBLICATION_DELETED(409, "기존 공개 동화가 없습니다. 공개 데이터를 확인하세요."),

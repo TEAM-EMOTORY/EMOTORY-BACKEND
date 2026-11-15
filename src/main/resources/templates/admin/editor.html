@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{admin/fragments :: head('이야기 편집')}"></head>
+<body>
+<header th:replace="~{admin/fragments :: header}"></header>
+<main id="editor" class="container" th:attr="data-api=@{/authoring/stories/{id}(id=${draft.id})},data-csrf=@{/admin/csrf},data-login=@{/admin/login}">
+    <a th:href="@{/admin/stories}">← 초안 목록</a>
+    <div class="toolbar"><div><p class="eyebrow">STORY EDITOR</p><h1>이야기 편집</h1>
+        <p id="save-state" class="muted"></p></div>
+        <div class="actions"><button id="save" type="button" class="secondary">초안 저장</button>
+            <button id="validate" type="button" class="secondary">저장 후 검증</button>
+            <button id="preview" type="button" class="secondary">미리보기</button>
+            <button id="publish" type="button" disabled>검증 후 공개</button></div>
+    </div>
+    <p id="message" class="notice" role="status" aria-live="polite">초안을 불러오는 중입니다.</p>
+    <p id="login-notice" hidden>로그인이 만료되었어요. 편집 내용을 유지한 채
+        <a th:href="@{/admin/login}" target="_blank" rel="noopener">새 창에서 로그인</a>한 후 다시 저장하세요.</p>
+    <noscript><p class="notice error">이야기 편집에는 JavaScript가 필요합니다.</p></noscript>
+    <form id="story-form" hidden>
+        <details id="story-settings" class="panel"><summary>이야기 기본 정보</summary><div class="fields">
+            <label>제목<input name="title" maxlength="255"></label>
+            <label>대표 감정<select name="emotion" class="emotion-select"></select></label>
+            <label class="wide">소개<textarea name="description" maxlength="255" rows="2"></textarea></label>
+            <label>최대 선택 횟수<input name="maxDepth" type="number" min="0" max="1000"></label>
+            <label>최대 장면 수<input name="maxNodes" type="number" min="1" max="1000"></label>
+            <label>시작 장면<select name="rootNodeId" id="root-node"></select></label>
+        </div></details>
+        <section class="panel scene-workspace">
+            <div class="section-heading"><h2 id="current-scene-title">시작 장면</h2>
+                <button id="toggle-structure" type="button" class="secondary" aria-expanded="false" aria-controls="structure-panel">전체 구조 보기</button></div>
+            <p class="muted">현재 장면을 작성하고, 선택지에서 다음 장면을 만들어 이야기를 이어가세요.</p>
+            <nav id="scene-path" class="scene-path" aria-label="장면 이동 경로"></nav>
+            <div class="actions scene-navigation">
+                <button id="previous-scene" type="button" class="secondary" disabled>← 이전 장면</button>
+                <button id="go-root" type="button" class="secondary">시작 장면으로</button>
+            </div>
+            <p id="root-notice" class="notice" hidden>시작 장면이 연결되어 있지 않아요. 기본 정보에서 기존 장면을 시작으로 지정하거나
+                <button id="create-root" type="button" class="secondary">시작 장면 만들기</button></p>
+            <section id="structure-panel" class="structure-panel" hidden aria-label="전체 이야기 구조">
+                <h3>전체 이야기 구조</h3>
+                <p class="muted">장면을 눌러 이동하세요. 연결되지 않은 장면도 여기에서 찾을 수 있어요.</p>
+                <div id="structure-list"></div>
+            </section>
+            <div id="nodes"></div>
+        </section>
+    </form>
+    <section id="validation" class="panel" hidden><h2>검증 결과</h2><p id="validation-summary"></p><ul id="issues"></ul></section>
+    <section id="preview-panel" class="panel" hidden><h2>플레이 미리보기</h2>
+        <p class="muted">현재 편집 내용을 미리 봅니다. 실제 플레이나 이미지 생성은 실행하지 않습니다.</p>
+        <h3 id="preview-title"></h3><p id="preview-content" class="story-content"></p>
+        <div id="preview-choices" class="actions"></div><button id="restart-preview" class="secondary" type="button">처음부터</button>
+    </section>
+</main>
+<script defer th:src="@{/admin/assets/story-navigation.js}"></script>
+<script defer th:src="@{/admin/assets/editor.js}"></script>
+</body>
+</html>

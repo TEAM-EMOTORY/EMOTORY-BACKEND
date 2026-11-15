@@ -35,6 +35,9 @@ public class PlaySession extends BaseTimeEntity {
     @JoinColumn(name = "story_id", nullable = false)
     private Story story;
 
+    @Column(name = "is_shared", nullable = false)
+    private boolean shared = false;
+
     public PlaySession(
             Member member,
             Story story,
@@ -56,7 +59,8 @@ public class PlaySession extends BaseTimeEntity {
     }
 
     // 플레이 종료
-    public void end() {
+    public void end(boolean shared) {
         this.status = PlaySessionStatus.ENDED;
+        this.shared = shared;
     }
 }
