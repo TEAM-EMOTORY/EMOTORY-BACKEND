@@ -24,6 +24,7 @@ import com.emotory.backend.global.exception.storyNode.StoryNodeNotFoundException
 import com.emotory.backend.global.exception.storyNode.StoryNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
@@ -55,15 +56,10 @@ public class PlaySessionService {
                         MemberNotFoundException::new
                 );
 
-        // 공개와 동일한 초안 잠금을 먼저 획득한 뒤 동화 잠금을 획득한다.
-        // 재공개가 먼저 끝났다면 최신 공개 ID를 확인하고 이전 버전의 새 플레이를 거절한다.
-        publications.findByStoryId(request.storyId()).ifPresent(publication -> {
-            var draft = drafts.findLockedById(publication.getDraftId())
-                    .orElseThrow(() -> new CustomException(ErrorCode.STORY_VERSION_UNAVAILABLE));
-            if (!Objects.equals(draft.getPublishedStoryId(), request.storyId())) {
-                throw new CustomException(ErrorCode.STORY_VERSION_UNAVAILABLE);
-            }
-        });
+        // 공개와 같은 초안 → 동화 순서로 잠근다. 동화 잠금은 동시 재진입의 중복 생성을 막는다.
+        var publishedDraft = publications.findByStoryId(request.storyId()).map(publication ->
+                drafts.findLockedById(publication.getDraftId())
+                        .orElseThrow(() -> new CustomException(ErrorCode.STORY_VERSION_UNAVAILABLE)));
 
         Story story =
                 storyRepository.findLockedById(
@@ -73,10 +69,27 @@ public class PlaySessionService {
                         StoryNotFoundException::new
                 );
 
+        // 기존 플레이는 이전 공개본·공개 중단 동화여도 이어갈 수 있다.
+        // 상태를 초기화하지 않으므로 선택 이력과 생성 이미지도 같은 세션에서 유지된다.
+        var resumable = playSessionRepository.findResumableSessions(
+                request.memberId(), request.storyId(), PageRequest.of(0, 1));
+        if (!resumable.isEmpty()) {
+            return PlaySessionResponse.from(resumable.get(0));
+        }
+
+        // 새 세션을 만들 때만 최신 공개본과 공개 여부를 검사한다.
+        if (publishedDraft.isPresent()
+                && !Objects.equals(publishedDraft.get().getPublishedStoryId(), request.storyId())) {
+            throw new CustomException(ErrorCode.STORY_VERSION_UNAVAILABLE);
+        }
         if (!story.isAvailable()) {
             throw new CustomException(ErrorCode.STORY_UNPUBLISHED);
         }
 
+        return createNewSession(member, story);
+    }
+
+    private PlaySessionResponse createNewSession(Member member, Story story) {
         StoryNode startNode =
                 storyNodeRepository
                         .findFirstByStoryOrderByNodeOrderAsc(

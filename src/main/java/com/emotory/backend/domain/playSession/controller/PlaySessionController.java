@@ -16,7 +16,7 @@ public class PlaySessionController implements PlaySessionControllerDocs {
 
     private final PlaySessionService playSessionService;
 
-    // 플레이 세션 생성
+    // 같은 사용자·동화의 진행 중인 세션을 이어가고, 없으면 새로 생성한다.
     @Override
     @PostMapping
     public PlaySessionResponse create(
