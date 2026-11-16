@@ -4,9 +4,20 @@ import com.emotory.backend.global.exception.CustomException;
 import com.emotory.backend.global.exception.ErrorCode;
 
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.HexFormat;
 
 /** 확장자가 아닌 실제 파일 헤더로 OpenAI에 전달할 이미지 형식을 정한다. */
 public record ImageInput(byte[] bytes, String contentType, String extension) {
+    public String sha256() {
+        try {
+            return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(bytes));
+        } catch (NoSuchAlgorithmException exception) {
+            throw new IllegalStateException("SHA-256 is required by the Java platform", exception);
+        }
+    }
+
     public static ImageInput from(byte[] bytes) {
         if (bytes == null || bytes.length < 12 || bytes.length > 10 * 1024 * 1024) throw invalid();
         if (bytes[0] == (byte) 0x89 && bytes[1] == 'P' && bytes[2] == 'N' && bytes[3] == 'G'

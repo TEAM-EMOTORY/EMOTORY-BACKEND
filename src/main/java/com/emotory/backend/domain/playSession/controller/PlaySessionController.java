@@ -16,7 +16,7 @@ public class PlaySessionController implements PlaySessionControllerDocs {
 
     private final PlaySessionService playSessionService;
 
-    // 같은 사용자·동화의 진행 중인 세션을 이어가고, 없으면 새로 생성한다.
+    // 매번 처음부터 플레이하며 같은 이름·사진의 기존 장면 이미지만 재사용한다.
     @Override
     @PostMapping
     public PlaySessionResponse create(

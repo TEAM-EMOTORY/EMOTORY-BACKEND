@@ -2,10 +2,13 @@ package com.emotory.backend.global.s3.service;
 
 import com.emotory.backend.global.exception.s3.UnsupportedFileFormat;
 import com.emotory.backend.global.exception.s3.UnsupportedImageType;
+import com.emotory.backend.global.exception.CustomException;
+import com.emotory.backend.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.net.URI;
 import java.util.UUID;
 
 @Service
@@ -59,6 +62,22 @@ public class S3FileService {
         }
 
         return "https://" + cloudFrontDomain + "/" + key;
+    }
+
+    public String extractFaceImageKey(String imageUrl) {
+        try {
+            URI uri = URI.create(imageUrl);
+            String path = uri.getPath();
+            if ("https".equals(uri.getScheme()) && cloudFrontDomain.equalsIgnoreCase(uri.getHost())
+                    && uri.getPort() == -1 && uri.getRawUserInfo() == null
+                    && uri.getRawQuery() == null && uri.getRawFragment() == null
+                    && path != null && path.startsWith("/faces/") && path.length() > 7 && path.length() <= 1025) {
+                return path.substring(1);
+            }
+        } catch (IllegalArgumentException ignored) {
+            // 업로드 버킷의 얼굴 사진만 읽으며 외부 URL은 다운로드하지 않는다.
+        }
+        throw new CustomException(ErrorCode.INVALID_IMAGE_REQUEST);
     }
 
     private String extractExtension(String contentType) {

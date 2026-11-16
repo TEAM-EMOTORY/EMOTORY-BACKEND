@@ -1,6 +1,8 @@
 package com.emotory.backend.domain.storyResult.service;
 
 import com.emotory.backend.domain.advice.entity.Advice;
+import com.emotory.backend.global.exception.CustomException;
+import com.emotory.backend.global.exception.ErrorCode;
 import com.emotory.backend.global.exception.advice.AdviceNotFoundException;
 import com.emotory.backend.domain.advice.repository.AdviceRepository;
 import com.emotory.backend.domain.generatedImage.entity.GeneratedImage;
@@ -37,8 +39,16 @@ public class StoryResultService {
             Long playSessionId,
             StoryResultCreateRequest request
     ) {
-        PlaySession playSession = playSessionRepository.findById(playSessionId)
+        PlaySession playSession = playSessionRepository.findLockedById(playSessionId)
                 .orElseThrow(PlaySessionNotFoundException::new);
+
+        if (playSession.getCurrentNode() == null
+                || !Boolean.TRUE.equals(playSession.getCurrentNode().getIsEnding())) {
+            throw new CustomException(ErrorCode.PLAY_SESSION_NOT_AT_ENDING);
+        }
+        if (storyResultRepository.existsByPlaySession_Id(playSessionId)) {
+            return;
+        }
 
         StoryResult storyResult = StoryResult.of(
                 request.summary(),
