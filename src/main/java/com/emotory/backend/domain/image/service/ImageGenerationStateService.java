@@ -13,6 +13,7 @@ import com.emotory.backend.global.exception.storyNode.StoryNodeNotFoundException
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.PageRequest;
 
 import java.net.URI;
 import java.time.Duration;
@@ -57,6 +58,12 @@ public class ImageGenerationStateService {
             if (oldRoot == null && !root.getId().equals(nodeId)) throw error(ErrorCode.IMAGE_REFERENCE_REQUIRED);
             context = contexts.save(SessionImageContext.create(sessionId, suppliedFaceKey,
                     oldRoot == null ? null : generatedKey(oldRoot.getImageUrl())));
+        }
+        if (cached == null && context.getReferenceImageKey() != null) {
+            var reusable = generated.findReusableImages(context.getReferenceImageKey(), node, PageRequest.of(0, 1));
+            if (!reusable.isEmpty()) {
+                cached = generated.save(new GeneratedImage(reusable.get(0).getImageUrl(), session, node));
+            }
         }
         if (cached != null) return new Claim(sessionId, nodeId, null, cached.getImageUrl(), null, null, null, null);
         if (context.getReferenceImageKey() == null) {

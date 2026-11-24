@@ -17,17 +17,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface PlaySessionControllerDocs {
 
     @Operation(
-            summary = "진행 중인 플레이 이어하기 또는 새 세션 생성",
-            description = "같은 memberId·storyId의 PLAYING 세션 중 결말에 도달하지 않은 세션을 반환합니다. "
-                    + "여러 개면 최근 수정 시각(없으면 생성 시각), 세션 ID 내림차순으로 선택합니다. "
-                    + "기존 세션이 없을 때만 새 세션을 생성하며, 새 플레이는 최신 공개본·공개 중인 동화만 가능합니다. "
-                    + "기존 세션은 이전 공개본 또는 공개 중단 상태여도 이어할 수 있습니다."
+            summary = "처음부터 새 플레이 시작",
+            description = "매 요청마다 시작 장면에서 새 플레이를 생성합니다. memberId는 사용자 생성 응답의 Location 헤더에서 얻습니다. "
+                    + "서버가 이름·얼굴 사진 SHA-256·동화 공개본이 같은 이전 플레이의 참고 이미지를 연결합니다. "
+                    + "이미 생성한 장면은 이미지 생성 API에서 기존 URL을 재사용하고, 처음 방문하는 장면만 생성합니다. "
+                    + "기존 플레이의 선택 기록과 공개 결과는 유지되며, 새 플레이는 최신 공개본·공개 중인 동화만 가능합니다. "
+                    + "이름이나 사진이 다르거나 사진 해시가 없는 과거 데이터는 이미지를 자동 재사용하지 않습니다."
     )
     @ApiResponse(
             responseCode = "200",
-            description = "기존 플레이 세션 반환 또는 새 세션 생성 성공"
+            description = "시작 장면에서 새 플레이 생성 성공"
     )
-    @ApiResponse(responseCode = "409", description = "이어갈 세션이 없고 이전 공개본 또는 공개 중단 동화이므로 새 플레이 시작 불가")
+    @ApiResponse(responseCode = "400", description = "필수 값 누락 또는 잘못된 사용자 얼굴 사진 URL")
+    @ApiResponse(responseCode = "409", description = "새 세션 생성 시 이전 공개본 또는 공개 중단 동화이므로 시작 불가")
     PlaySessionResponse create(
             @RequestBody
             PlaySessionCreateRequest request

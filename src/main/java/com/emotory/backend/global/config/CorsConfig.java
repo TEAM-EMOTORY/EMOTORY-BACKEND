@@ -17,6 +17,7 @@ public class CorsConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowCredentials(true);
+        config.addExposedHeader("Location");
         config.setAllowedOrigins(List.of(
                 "http://localhost:5173",    //Vite 개발 서버
                 "https://emotory.shop",    //배포된 실제 주소

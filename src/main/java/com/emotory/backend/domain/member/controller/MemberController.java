@@ -6,8 +6,9 @@ import com.emotory.backend.domain.member.dto.response.MemberNameResponse;
 import com.emotory.backend.domain.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.net.URI;
 
 @RestController
 @RequestMapping("/members")
@@ -17,10 +18,10 @@ public class MemberController implements MemberControllerDocs {
     private final MemberService memberService;
 
     @Override
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public void createMember(@Valid @RequestBody MemberCreateRequest request) {
-        memberService.createMember(request);
+    public ResponseEntity<Void> createMember(@Valid @RequestBody MemberCreateRequest request) {
+        Long memberId = memberService.createMember(request);
+        return ResponseEntity.created(URI.create("/members/" + memberId)).build();
     }
 
     @Override

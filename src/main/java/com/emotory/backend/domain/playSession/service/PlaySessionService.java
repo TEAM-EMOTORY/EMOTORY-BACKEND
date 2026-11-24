@@ -1,6 +1,8 @@
 package com.emotory.backend.domain.playSession.service;
 
 import com.emotory.backend.domain.member.entity.Member;
+import com.emotory.backend.domain.image.entity.SessionImageContext;
+import com.emotory.backend.domain.image.repository.SessionImageContextRepository;
 import com.emotory.backend.domain.generatedImage.repository.GeneratedImageRepository;
 import com.emotory.backend.domain.playHistory.repository.PlayHistoryRepository;
 import com.emotory.backend.domain.authoring.repository.StoryDraftRepository;
@@ -22,6 +24,7 @@ import com.emotory.backend.domain.storyNode.repository.StoryNodeRepository;
 import com.emotory.backend.global.exception.playSession.PlaySessionNotFoundException;
 import com.emotory.backend.global.exception.storyNode.StoryNodeNotFoundException;
 import com.emotory.backend.global.exception.storyNode.StoryNotFoundException;
+import com.emotory.backend.global.s3.service.S3FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.PageRequest;
@@ -43,6 +46,8 @@ public class PlaySessionService {
     private final StoryDraftRepository drafts;
     private final PlayHistoryRepository playHistoryRepository;
     private final GeneratedImageRepository generatedImageRepository;
+    private final SessionImageContextRepository imageContexts;
+    private final S3FileService files;
 
     @Transactional
     public PlaySessionResponse create(
@@ -56,7 +61,7 @@ public class PlaySessionService {
                         MemberNotFoundException::new
                 );
 
-        // 공개와 같은 초안 → 동화 순서로 잠근다. 동화 잠금은 동시 재진입의 중복 생성을 막는다.
+        // 공개와 같은 초안 → 동화 순서로 잠근다.
         var publishedDraft = publications.findByStoryId(request.storyId()).map(publication ->
                 drafts.findLockedById(publication.getDraftId())
                         .orElseThrow(() -> new CustomException(ErrorCode.STORY_VERSION_UNAVAILABLE)));
@@ -69,15 +74,7 @@ public class PlaySessionService {
                         StoryNotFoundException::new
                 );
 
-        // 기존 플레이는 이전 공개본·공개 중단 동화여도 이어갈 수 있다.
-        // 상태를 초기화하지 않으므로 선택 이력과 생성 이미지도 같은 세션에서 유지된다.
-        var resumable = playSessionRepository.findResumableSessions(
-                request.memberId(), request.storyId(), PageRequest.of(0, 1));
-        if (!resumable.isEmpty()) {
-            return PlaySessionResponse.from(resumable.get(0));
-        }
-
-        // 새 세션을 만들 때만 최신 공개본과 공개 여부를 검사한다.
+        // 재플레이도 새 진행 기록이므로 최신 공개본과 공개 여부를 검사한다.
         if (publishedDraft.isPresent()
                 && !Objects.equals(publishedDraft.get().getPublishedStoryId(), request.storyId())) {
             throw new CustomException(ErrorCode.STORY_VERSION_UNAVAILABLE);
@@ -108,6 +105,17 @@ public class PlaySessionService {
         playSessionRepository.save(
                 playSession
         );
+        var context = SessionImageContext.create(playSession.getId(), files.extractFaceImageKey(member.getFaceImageUrl()), null);
+        context.saveFace(member.getFaceSnapshotKey());
+        if (member.getFaceImageSha256() != null) {
+            // shortcut: 최초 장면이 완성되기 전의 동시 재플레이는 별도 생성할 수 있다. 중복 비용이 커지면 사진별 생성 잠금을 둔다.
+            var reusable = imageContexts.findReusableContexts(member.getName(), member.getFaceImageSha256(),
+                    story.getId(), PageRequest.of(0, 1));
+            if (!reusable.isEmpty()) {
+                context.saveReference(reusable.get(0).getReferenceImageKey());
+            }
+        }
+        imageContexts.save(context);
 
         return PlaySessionResponse.from(
                 playSession
