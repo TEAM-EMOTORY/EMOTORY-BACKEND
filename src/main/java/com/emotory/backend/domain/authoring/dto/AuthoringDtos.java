@@ -9,6 +9,7 @@ import java.util.Map;
 public final class AuthoringDtos {
     private AuthoringDtos() {}
     public record CreateRequest(@Size(max = 255) String title) {}
+    public record ImportableStory(Long storyId, String title, boolean available) {}
     public record SaveRequest(@NotNull @PositiveOrZero Long revision,
                               @NotNull @Valid AuthoringDocument document) {}
     public record RevisionRequest(@NotNull @PositiveOrZero Long revision) {}
