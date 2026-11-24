@@ -48,7 +48,7 @@ public class ExternalAiImageClient {
         builder.part("prompt", prompt);
 
         // 모델
-        builder.part("model", "gpt-image-2.5-flare");
+        builder.part("model", "gpt-image-2.6-flare");
 
         // 비용 절약 옵션
         builder.part("quality", "low");
