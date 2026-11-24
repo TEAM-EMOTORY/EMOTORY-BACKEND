@@ -26,10 +26,27 @@
         </article>
     </div>
     <nav class="pagination" aria-label="초안 목록 페이지">
-        <a th:if="${drafts.hasPrevious()}" th:href="@{/admin/stories(page=${drafts.number - 1})}">이전</a>
+        <a th:if="${drafts.hasPrevious()}" th:href="@{/admin/stories(page=${drafts.number - 1},importPage=${importable.number})}">이전</a>
         <span th:text="${drafts.number + 1} + ' 페이지'"></span>
-        <a th:if="${drafts.hasNext()}" th:href="@{/admin/stories(page=${drafts.number + 1})}">다음</a>
+        <a th:if="${drafts.hasNext()}" th:href="@{/admin/stories(page=${drafts.number + 1},importPage=${importable.number})}">다음</a>
     </nav>
+    <section class="panel">
+        <h2>기존 동화 가져오기</h2>
+        <p class="muted">기존 동화를 편집 가능한 초안으로 가져옵니다. 현재 공개 상태와 사용자의 진행 기록은 유지되며, 수정 후 공개하면 새 버전으로 제공됩니다.</p>
+        <p th:if="${importable.empty}">가져올 기존 동화가 없습니다.</p>
+        <article th:each="story : ${importable.content}" class="story-card">
+            <h3 th:text="${story.title}"></h3>
+            <p class="muted" th:text="'동화 #' + ${story.storyId} + ' · ' + ${story.available ? '공개 중' : '공개 중단'}"></p>
+            <form th:action="@{/admin/stories/import/{id}(id=${story.storyId})}" method="post">
+                <button type="submit">초안으로 가져오기</button>
+            </form>
+        </article>
+        <nav class="pagination" aria-label="기존 동화 목록 페이지">
+            <a th:if="${importable.hasPrevious()}" th:href="@{/admin/stories(page=${drafts.number},importPage=${importable.number - 1})}">이전</a>
+            <span th:text="${importable.number + 1} + ' 페이지'"></span>
+            <a th:if="${importable.hasNext()}" th:href="@{/admin/stories(page=${drafts.number},importPage=${importable.number + 1})}">다음</a>
+        </nav>
+    </section>
 </main>
 </body>
 </html>

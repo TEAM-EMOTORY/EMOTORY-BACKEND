@@ -2,6 +2,7 @@ package com.emotory.backend.domain.admin;
 
 import com.emotory.backend.domain.authoring.dto.AuthoringDtos.CreateRequest;
 import com.emotory.backend.domain.authoring.service.AuthoringService;
+import com.emotory.backend.domain.authoring.service.ExistingStoryImportService;
 import com.emotory.backend.global.exception.ErrorResponse;
 import com.emotory.backend.global.exception.authoring.AuthoringException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 public class AdminPageController {
     private final AdminSessionController sessions;
     private final AuthoringService authoring;
+    private final ExistingStoryImportService imports;
 
     @ModelAttribute
     void preventCaching(HttpServletResponse response) {
@@ -61,9 +63,16 @@ public class AdminPageController {
     }
 
     @GetMapping("/stories")
-    public String stories(@RequestParam(defaultValue = "0") int page, Model model) {
+    public String stories(@RequestParam(defaultValue = "0") int page,
+                          @RequestParam(defaultValue = "0") int importPage, Model model) {
         model.addAttribute("drafts", authoring.list(page));
+        model.addAttribute("importable", imports.list(importPage));
         return "admin/stories";
+    }
+
+    @PostMapping("/stories/import/{storyId}")
+    public String importStory(@PathVariable Long storyId) {
+        return "redirect:/admin/stories/" + imports.importStory(storyId).id();
     }
 
     @PostMapping("/stories")
@@ -72,6 +81,7 @@ public class AdminPageController {
         if (binding.hasErrors()) {
             response.setStatus(400);
             model.addAttribute("drafts", authoring.list(0));
+            model.addAttribute("importable", imports.list(0));
             model.addAttribute("error", "제목은 255자 이내로 입력하세요.");
             return "admin/stories";
         }
@@ -88,6 +98,7 @@ public class AdminPageController {
     public String authoringError(AuthoringException exception, HttpServletResponse response, Model model) {
         response.setStatus(exception.getErrorCode().getStatus());
         model.addAttribute("error", exception.getErrorCode().getMessage());
+        model.addAttribute("issues", exception.getErrors());
         return "admin/error";
     }
 }

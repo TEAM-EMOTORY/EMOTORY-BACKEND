@@ -2,6 +2,7 @@ package com.emotory.backend.domain.authoring.controller;
 
 import com.emotory.backend.domain.authoring.dto.AuthoringDtos.*;
 import com.emotory.backend.domain.authoring.service.AuthoringService;
+import com.emotory.backend.domain.authoring.service.ExistingStoryImportService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -17,6 +18,19 @@ import java.net.URI;
 @Tag(name = "동화 제작", description = "동화 초안 작성·저장·검증 및 공개")
 public class AuthoringController {
     private final AuthoringService authoringService;
+    private final ExistingStoryImportService imports;
+
+    @GetMapping("/importable")
+    @Operation(summary = "가져올 수 있는 기존 동화 목록")
+    public Page<ImportableStory> importable(@RequestParam(defaultValue = "0") int page) {
+        return imports.list(page);
+    }
+
+    @PostMapping("/import/{storyId}")
+    @Operation(summary = "기존 동화를 초안으로 가져오기", description = "기존 공개 상태와 플레이를 보존합니다. 이미 연결된 동화는 기존 초안을 반환합니다.")
+    public DraftResponse importStory(@PathVariable Long storyId) {
+        return imports.importStory(storyId);
+    }
 
     @GetMapping
     @Operation(summary = "초안 목록 조회", description = "최근 수정 순으로 페이지당 20개를 조회합니다. page는 0부터 시작합니다.")
