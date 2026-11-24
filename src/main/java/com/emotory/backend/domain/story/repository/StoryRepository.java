@@ -10,8 +10,13 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface StoryRepository extends JpaRepository<Story, Long> {
+    @Query("select s from Story s where not exists (select p.id from StoryPublication p where p.storyId = s.id)")
+    Page<Story> findImportableStories(Pageable pageable);
+
     @Query("""
             select s from Story s
             where s.available = true and (

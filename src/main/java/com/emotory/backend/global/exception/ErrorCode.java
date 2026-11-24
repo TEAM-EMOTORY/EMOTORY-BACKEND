@@ -17,6 +17,7 @@ public enum ErrorCode {
     UNSUPPORTED_EMOTION_PATTERN(400, "지원하지 않는 감정 패턴입니다."),
 
     AUTHORING_DUPLICATE_ID(400, "초안의 ID가 중복됩니다."),
+    AUTHORING_IMPORT_FAILED(400, "기존 동화를 가져올 수 없습니다. 장면 내용과 연결을 확인하세요."),
     AUTHORING_VALIDATION_FAILED(400, "공개할 수 없는 초안입니다. 검증 오류를 확인하세요."),
 
     // 401 error
